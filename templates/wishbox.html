@@ -1,0 +1,605 @@
+{% extends "base.html" %}
+{% block title %} Add a Free advertisement{% endblock %}
+{% block content%}
+<br><br><br>
+	<div class="col-md-6 col-md-offset-3">
+		
+	<div class="panel panel-default">	
+		<div class="panel-heading">
+        <h4 class="panel-title text-center">Add a Free advertisement</h4>
+      </div>
+		<div class="panel-body">
+		<form id="wish-form" name="wish-form" action="/wishbox/" method="post" class="form-horizontal" role="form" enctype="multipart/form-data" onsubmit="return checkSize(2097152)";>
+		<div class="form-group">
+		<div class="col-xs-12">
+			
+		<div class="col-xs-12">
+		<div class="filter3 add-wish-part-1">				
+				<div class="form-group ">		
+					<div class="">
+					<h5 class=" text-center"><b>Select categories for your Ad</b></h5>	
+					<div class="col-xs-5 col-md-4 col-md-offset-1 ">
+						<table class="table table-bordered table-condensed">
+						<tbody>
+
+						<tr><td class="cat-title text-center"><i class="fa fa-server"></i>&nbsp;&nbsp;<b>Category</b></td></tr>
+						{% for cat in cat_obj %}
+							<tr>
+							<td class="chk_filter_container">
+								<input type='radio' value='{{ cat.id }}' class="chk_filter" id="chk_{{ cat.name }}2" name="wish-cat"/>
+								<label for="chk_{{ cat.name }}2">
+									<p>&nbsp;&nbsp;&nbsp;{{ cat.name }}
+										<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+									</p>
+								</label>
+								</td>
+							</tr>
+
+						{% endfor %}										
+							</tbody>							
+						</table>		
+
+					</div>		
+						<div class="col-md-1 hidden-xs hidden-sm "><br><br><br><br><br><br><br><span class="glyphicon glyphicon glyphicon-chevron-right"></span></div>						
+						{% for cat in cat_obj %}											
+							<div class="col-md-5 col-xs-7 wish-categories" id="{{ cat.name }}-subcat">
+									<table class="table table-bordered table-condensed">
+										<tbody>
+						<tr><td class="cat-title text-center"><i class="fa fa-list-ul"></i>&nbsp;&nbsp;<b>Sub Category</b></td></tr>
+
+							{% for sub in cat.subcategory_set.all %}
+									<tr>
+									<td class="chk_filter_container">
+										<input type='radio' value='{{sub.id}}' class="chk_filter_subcat" id="chk_{{sub.name}}2" name="sub-cat" required />
+										<label for="chk_{{sub.name}}2">
+												<p>&nbsp;&nbsp;	{{ sub.name }}
+												<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+												</p>
+										</label>
+									</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+								</table>
+								</div>
+						{% endfor %}
+
+					</div>
+				  </div>
+		<div class="form-group hidden-lg hidden-md hidden-xs hidden-sm">
+		<div class="col-xs-6 ">
+		<select class="form-control search-filter-category" name="cat" data-option="{{ request.GET.cat }}" >
+		<option value="" selected >Category</option>
+		{% for cat in cat_obj %}
+		<option value="{{ cat.name }}" data-rel="{{ cat.name }}">{{ cat.name }}</option>
+			{% endfor %}										
+		</select>
+	</div>
+	
+	<div class="col-xs-6 ">
+		<select class="form-control search-filter-subcategory " name="sub_cat" data-option="{{ request.GET.sub_cat }}" >
+		<option value="" selected class="cascade">Sub-Category</option>
+						{% for cat in cat_obj %}											
+		<option disabled class="text-muted">{{ cat.name }}</option>
+			{% for sub in cat.subcategory_set.all %}
+		<option value="{{ sub.name }}" class="{{ cat.name }} cascade" style="display: none;">{{ sub.name }}</option>
+			{% endfor %}										
+			{% endfor %}										
+
+		</select>
+	</div>
+
+
+
+				</div>
+
+				<div class="form-group">
+					 
+					<div class=""	>
+					<h5 class=" text-center"><b>Select a type</b></h5>	
+					<div class="col-md-10 col-md-offset-1 table-responsive">
+					<table class="table table-bordered table-condensed">
+
+					<tbody>
+						<tr>						
+							<td class="chk_filter_container">
+								<input type='radio' value='sell' name="filter-radio" class="chk_filter3" id="chk_sell2"/>
+								<label for="chk_sell2">
+									<p class="text-center">I want to Sell
+										<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+									</p>
+								</label>				
+							</td>							
+							<td class="chk_filter_container">
+								<input type='radio' value='buy' name="filter-radio" class="chk_filter3" id="chk_buy2"/>
+								<label for="chk_buy2">
+									<p class="text-center">I want to Buy
+										<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+									</p>
+								</label>
+							</td>															
+						</tr>
+					</tbody>
+				</table>		 					 
+			</div>
+			</div>
+				
+			</div>	
+		</div>
+		</div>
+	
+	<div id="add-wish-hidden-form">
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label" for="form_text_box3"><b class="pull-left">Title *</b></div>
+				<div class="col-xs-12 col-md-10">
+					<textarea rows="2" name="wish_text" id="form_text_box3" class="simplebox form-control" placeholder="Add a short title" maxlength="150" required="required" ></textarea>
+					<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</div>
+			</div>
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label" for="form_text_box3"><b class="pull-left">Details *</b></div>
+				<div class="col-xs-12 col-md-10">
+					<textarea rows="6"  id="ad-desc" class="simplebox form-control" placeholder="Description about products, may include features, condition, brand, age and other details" maxlength="500" required="required" ></textarea>
+					<input name="desc" id="ad-desc-hidden" type="hidden">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label"><b class="pull-left">Price *</b></div>
+			<div class="col-xs-5 col-md-3">					
+				<input  type="text" pattern="[0-9]*" maxlength="8" name="price" id="ad-price" class="form-control" placeholder="Price" required="required" >
+			</div>
+
+			<div class="hidden-xs hidden-sm col-xs-2 col-sm-2 col-md-2 ">
+			<div class=" control-label"><b class="pull-left">Contact</b></div>
+			
+			<div class="row hidden-md hidden-lg hidden-xs hidden-sm "><b>Mob</b></div>
+			
+			</div>
+	
+			<div class="col-xs-5 col-sm-5 col-md-3 ">					
+				<div class="">
+				<input  type="text" pattern="[0-9]*"  maxlength="10" value="" name="contact" id="ad-contact" type="number" class="form-control" placeholder="Contact number" />
+				</div>
+			</div>
+
+			<div class="col-xs-2 col-sm-2 col-md-2" style="padding-top:5px">					
+				<div class="row">
+
+				<i class="fa fa-whatsapp fa-fw  pull-left"  style="font-size:20px; vertical-align: middle;color:green"></i>
+				<input type='checkbox' name="whatsapp_chk" class="" id="whatsapp-chk"/>
+			</div>
+
+			</div>
+
+		</div>
+
+
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 control-label hidden-xs hidden-sm "><b class="pull-left">Tags *</b></div>
+			<div class="col-xs-12 col-md-10 form-tags-check">
+				<input type="" name="m_tags" class="tagsinput form-control" placeholder="Press enter to add short tags">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 control-label hidden-xs hidden-sm " ><b class="pull-left">Location*</b></div>
+			<div class="col-xs-12 col-md-10">					
+			<input class=" simplebox form-control " id="search-city2" type="text" placeholder="Enter Location of product" name="search-city2" required />
+	    	<input type="hidden" name="search-city2-id" id="search-city2-id">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 control-label"><b>Add</b>-<b>Images</b></div>
+
+			
+			<div class="col-xs-6 col-md-8" id="wish-image-list">
+
+				<input type='file' class='wish-image-item' id="upload-image"  name='wishimages[]' size="" accept='image/*'>           				     
+
+			</div>
+			<div class="col-xs-2  col-sm-1 col-md-1  pull-right">
+				<div id="remove-wish-image" class="text-muted btn-sm btn btn-default pull-right">
+					<span class="glyphicon glyphicon-minus"></span> 
+				</div>		
+			</div>				
+			<div class="col-xs-2  col-sm-1 col-md-1 pull-right">
+				<div id="add-wish-image" class="text-muted btn-sm btn btn-default pull-right">
+					<span class="glyphicon glyphicon-plus"></span> 
+				</div>		
+			</div>
+				
+		</div>  
+			{% if request.user.facebook_id != NULL %}	
+		<div class="form-group">
+			<div class="col-xs-12">
+			<a class="btn btn-social-icon btn-xs btn-facebook pull-left"><span class="fa fa-facebook"></span></a>
+			<div class="pull-left" ><b>&nbsp;&nbsp;Post on facebook</b>&nbsp;&nbsp;</div>
+			<div class="" ><input id="wish-fb-cb" name="fb-chk" type="checkbox" checked> </div>			
+			</div>
+		</div>
+			{% endif %}
+			<div class="form-group"> 
+			<div class="col-xs-12">
+			<small class="text-muted">By clicking "Post free ad" you accept <a href="{% url 'policy' %} " target='_blank'>Privacy policy</a> and <a href="{% url 'terms' %}" target='_blank'>Terms of Use</a> by sellbig.in</small>
+			</div>
+			</div>
+			<input id="wish-fb-cb" name="fb-chk" type="hidden" >
+			<div class="row" >
+				<div class="col-xs-6 col-sm-6 col-md-3 pull-left">
+					<a type=""  id="add-wish-back-button" Class="pull-right btn-block btn btn-default" >
+								<span class="glyphicon glyphicon-hand-left" aria-hidden="true">&nbsp;</span>
+						<b>Go Back </b> </a>             
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-3 pull-right">
+
+					<button type="submit"  id="add-wish-home" Class=" pull-right btn-block btn btn-danger" onclick=""><b>Post free ad</b> </button>
+
+				</div>
+
+			</div>
+			{% csrf_token %}
+			</div>
+		</div>
+	</form>        
+	</div>
+	
+	{% include 'django_facebook/_facebook_js.html' %}
+    
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/typeahead.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-tagsinput.min.js"></script>
+
+<script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.validation/1.14.0/additional-methods.js"></script>
+
+<script>
+ $("#wish-form").validate({
+  submitHandler: function(form) {
+	  if($('.bootstrap-tagsinput').find('span').length>0){
+    // everything looks good!
+	if (document.getElementById('wish-fb-cb').checked) {
+	F.connect(form, ['publish_actions']);
+	}
+	else {
+		form.submit();
+	}}
+	else {
+			$('.tags-error').remove();
+			$('.form-tags-check').append( " <span class='tags-error '><b>Please add tags to your post.</b></span>");
+		    return false;
+			e.preventDefault();
+		}	
+  }
+ });
+</script>
+
+
+
+<script type="text/javascript">
+function checkSize(max_img_size)
+{
+    var input = document.getElementById("upload-image");    
+    // check for browser support (may need to be modified)
+    if(input.files && input.files.length == 1)
+    {           
+        if (input.files[0].size > max_img_size) 
+        {
+            alert("The file must be less than " + (max_img_size/1024/1024) + "MB");
+            return false;
+        }
+    }
+    return true;
+}
+</script>
+<script>
+$('nav li a').hover(function () {
+$(this).siblings('ul').show();
+$(this).parent().siblings().children('ul').hide();
+});
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+
+<script>
+    $("#form_text_box3").popover({ 
+        content: "<b>Good title will help to sell/buy quickly</b><ul><li>Add product name, year, price and model.</li><li>Use correct details only.</li><li><b>Example</b>: Excellent condition 2012 Model i20 40k Kms driven.</li></ul>",
+        container: 'body',
+        html:'true',
+		placement:'bottom',
+        dataContainer : '.modal-body',
+        	trigger:"hover"
+
+            });
+</script>
+
+<script>
+	$("#ad-desc").popover({ 
+	content: "<b>Explain your product.</b><ul><li>Add additional details for product.</li><li>Do mention name, condition, make, location etc</li><li>Condition of product, warranty can be mentioned while selling. </li></ul>",
+	container: 'body',
+	html:'true',
+	placement:'top',
+	dataContainer : '.modal-body',
+	trigger:"hover"
+});
+</script>
+
+<script>
+	$("#ad-price").popover({ 
+	content: "<b>Expected price for the product</b><ul><li>Enter a realistic price.</li><li>Only enter whole numbers, do not add ',' or alphabets</li></ul>",
+	container: 'body',
+	html:'true',
+	placement:'top',
+	dataContainer : '.modal-body',
+	trigger:"hover"
+});
+</script>
+
+<script>
+	$("#whatsapp-chk").popover({ 
+	content: "<b>Select if this contact is available on whatsapp</b>",
+	container: 'body',
+	html:'true',
+	placement:'top',
+	dataContainer : '.modal-body',
+	trigger:"hover"
+});
+</script>
+<script>
+	$("#ad-contact").popover({ 
+	content: "We never share or misuse your number.",
+	container: 'body',
+	html:'true',
+	placement:'top',
+	dataContainer : '.modal-body',
+	trigger:"hover"
+});
+</script>
+
+<script>
+	$("#search-city2").popover({ 
+	content: "Select your city or a city nearby",
+	container: 'body',
+	html:'true',
+	placement:'bottom',
+	dataContainer : '.modal-body',
+	trigger:"hover"
+});
+</script>
+
+<script>
+$('#chk_Vehicles2').on('click',function(){
+	$('#Vehicles-subcat').show();
+	$('#Kids-subcat').hide();
+	$('#Health-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+
+<script>
+$('#chk_Vehicles2').on('click',function(){
+	$('#Vehicles-subcat').show();
+	$('#Kids-subcat').hide();
+	$('#Health-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+<script>
+$('#chk_Household2').on('click',function(){
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Health-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').show();
+	$('#Pets-subcat').hide();
+	});
+</script>
+
+<script>
+$('#chk_Kids2').on('click',function(){
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').show();
+	$('#Health-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+<script>
+$('#chk_Health2').on('click',function(){
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Health-subcat').show();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+<script>
+$('#chk_Media2').on('click',function(){
+	$('#Health-subcat').hide();
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Media-subcat').show();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();	
+	});
+</script>
+<script>
+$('#chk_Electronics2').on('click',function(){
+	$('#Health-subcat').hide();
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').show();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+<script>
+$('#chk_Pets2').on('click',function(){
+	$('#Health-subcat').hide();
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').hide();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').show();
+	});
+</script>
+<script>
+$('#chk_Mobile2').on('click',function(){
+	$('#Health-subcat').hide();
+	$('#Vehicles-subcat').hide();
+	$('#Kids-subcat').hide();
+	$('#Media-subcat').hide();
+	$('#Mobile-subcat').show();
+	$('#Electronics-subcat').hide();
+	$('#Household-subcat').hide();
+	$('#Pets-subcat').hide();
+	});
+</script>
+
+<script>
+$('.chk_filter').on('click',function(){
+$('.chk_filter_subcat').removeAttr('checked'); 
+});
+</script>
+
+<script>
+$('#chk_sell2,#chk_buy2').on('click',function(){
+	 if($('.chk_filter').is(':checked') && $('.chk_filter_subcat').is(':checked')&& $('.chk_filter3').is(':checked'))
+	  {
+		 $('#add-wish-hidden-form').show(); 
+		 $('.add-wish-part-1').hide();
+		 $('#add-wish-back-button').show();	
+	  }
+		else
+	  {
+		  alert("Please select a category and sub category ");
+        $(this).removeAttr('checked'); 
+	  }
+});
+</script>
+
+<script>
+$('#add-wish-back-button').on('click',function(){
+		 $('#add-wish-hidden-form').hide(); 
+		 $('.add-wish-part-1').show();
+		 $('#add-wish-back-button').hide();	
+		$('.chk_filter3').removeAttr('checked'); 
+
+});
+ </script>
+<script>
+    $('#cat-pet').click(function() {
+		$('#sub-cat-pet').toggle();
+		$('#cat-pet').parent().siblings().hide();
+		$('#cat-pet').siblings().hide();
+    });
+</script>
+<script>
+$( "input#search-city2" ).autocomplete({
+	source: "{% url 'autocomplete_city' %}",
+	minLength: 2,	
+	  select: function(event, ui) {
+        event.preventDefault();
+        $("#search-city2").val(ui.item.city);
+		$("#search-city2-id").val(ui.item.id);
+
+    },
+    focus: function(event, ui) {
+        event.preventDefault();
+        $("#search-city2").val(ui.item.city);
+		$("#search-city2-id").val(ui.item.id);
+    },	
+    change: function(event,ui){
+  $(this).val((ui.item ? ui.item.city : ""));
+}	
+});
+</script>
+
+
+<script>
+$('.tagsinput').tagsinput({
+typeahead: {
+source: function (query, process) {
+	return $.getJSON(
+	'{% url "autocomplete_tag" %}',
+	{ term: query },
+	function (data) {
+	});
+	},
+	freeInput: true,
+	},	
+    trimValue: true,	
+	maxChars: 20,
+	maxTags: 5,
+	confirmKeys: [13, 44,32],	
+});
+</script>
+
+<script>
+   $('.bootstrap-tagsinput').find('input').blur(function() {
+		$('.tagsinput').tagsinput('refresh');
+		$(this).val('');
+	});
+</script>
+
+<script>
+$("#add-wish-image").on("click",function(){
+	if($(".wish-image-item").length < 5)
+		{			
+			$("#wish-image-list").append("<input type='file' class='wish-image-item' name='wishimages[]' accept='image/*'>");	
+		}
+	else{
+		alert('Only 5 images can be added');
+		}
+	});
+$("#remove-wish-image").on("click",function(){
+	if($(".wish-image-item").length > 1)
+		{
+		$(".wish-image-item").last().remove();	
+		}
+	});	
+</script>
+<script>
+$("#ad-desc").change(function(){
+	value=$("#ad-desc").val();
+	new_value=value.replace(/\n\r?/g, '<br />'); 
+	$("#ad-desc-hidden").val(new_value)
+	value=$("#ad-desc-hidden").val();
+	});
+</script>
+<script>
+$('#chk_buy2').on('click',function(){
+$('#image-class').hide();
+});</script>
+<script>
+$('#chk_sell2').on('click',function(){
+$('#image-class').show();
+});</script>
+
+{% endblock %}
+

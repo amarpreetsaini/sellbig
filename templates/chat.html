@@ -1,0 +1,46 @@
+{% load endless %}
+{% load widget_tweaks %}
+{% load calculations %}
+{% load thumbnail %}
+
+{% paginate messages using "chat" %}    	
+
+{% show_more "Load Previous" %}
+
+	{% for message in messages reversed %}
+
+	<div class="message-threads">
+		 {% if message.from_user.user_id == user %} 
+	<li class="media">
+		 <div class="media-left">	
+		<div class="talk-img-container">		
+				{% thumbnail message.from_user.avatar "80x80" crop="center" as im %}
+						<img class="media-object" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}							
+		</div>				
+		</div>				
+		<div class="media-body">
+			<div>{{ message.text }}</div>
+			<small class="media-heading text-muted"><a class="text-muted" href="/{{ message.from_user.user_id.username}}">{{ message.from_user.user_id.get_full_name }}</a> <span class="pull-right"> {{ message.added | feed_time }}</span></small>
+		</div>
+	</li>
+		 {% else %}
+
+	<li class="media">
+		 <div class="media-left">	
+		<div class="talk-img-container">		
+				{% thumbnail message.from_user.avatar "80x80" crop="center" as im %}
+						<img class="media-object" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}							
+		</div>				
+		</div>				
+		<div class="media-body">
+			<div>{{ message.text }}</div>
+			<small class="media-heading text-muted"><a class="text-muted" href="/{{ message.from_user.user_id.username}}">{{ message.from_user.user_id.get_full_name }}</a> <span class="pull-right"> {{ message.added | feed_time }}</span></small>
+		</div>
+	</li>
+
+		 {% endif %}
+		 </div>
+		
+	{% endfor %}	

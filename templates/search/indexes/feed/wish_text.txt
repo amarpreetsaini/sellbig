@@ -1,0 +1,6 @@
+{{ object.wish_text }}
+{% for tag in object.tags.all %}{{ tag.name }} {% endfor %}
+{{ object.user.user_id.get_full_name }}
+{{ object.category }}
+{{ object.subcategory }}
+{{ object.price }}

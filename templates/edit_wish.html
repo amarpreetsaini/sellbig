@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load calculations %}
+{% load thumbnail %}
+{% load widget_tweaks %}
+{% block content %}
+<br><br><br>
+<div class="feed">
+
+<br>
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+
+	<div class="modal-dialog">	
+	<div class="modal-content">
+	<div class="modal-header">
+        <h4 class="modal-title"><b>Edit your advertisement</b></h4>
+      </div>
+
+	<div class="modal-body">
+		<form id="" name="" action="" method="post" class="form-horizontal" role="form" enctype="multipart/form-data" onsubmit="return checkSize(2097152)";>
+
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label" for="form_text_box3"><b class="pull-left">Title</b></div>
+				<div class="col-xs-12 col-md-10">
+					<textarea rows="2" name="wish_text" id="form_text_box3" class="simplebox form-control" placeholder="Add a short title" maxlength="150" required="required" >{{ wish_obj.wish_text }}</textarea>
+					<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</div>
+			</div>
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label" for="form_text_box3"><b class="pull-left">Details</b></div>
+				<div class="col-xs-12 col-md-10">
+					<textarea name="desc" rows="6"  id="ad-desc" class="simplebox form-control" placeholder="Description about products, may include features, condition, brand, age and other details" maxlength="500" required="required" >{{ wish_obj.desc }}</textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-xs-2 col-sm-2 col-md-2 hidden-xs hidden-sm control-label"><b class="pull-left">Price</b></div>
+			<div class="col-xs-5 col-md-3">					
+				<input  type="text" pattern="[0-9]*" maxlength="8" value="{{ wish_obj.price }}" name="price" id="ad-price" class="form-control" placeholder="Price" required="required" >
+			</div>
+		</div>
+
+			<div class="row" >
+				<div class="col-xs-6 col-sm-6 col-md-3 pull-left">
+					<a Class="pull-right btn-block btn btn-default" href="/wish/{{ wish_obj.slug }}/">
+								<span class="glyphicon glyphicon-hand-left" aria-hidden="true">&nbsp;</span>
+						<b>Go Back </b> </a>             
+				</div>
+
+				<div class="col-xs-6 col-sm-6 col-md-3 pull-right">
+					<button type="submit"  id="add-wish-home" Class=" pull-right btn-block btn btn-danger" onclick=""><b>Update</b> </button>
+				</div>
+				</div>
+
+	</form>
+	</div>
+
+	</div>
+</div>
+
+</div>
+</div>
+
+{% endblock %}

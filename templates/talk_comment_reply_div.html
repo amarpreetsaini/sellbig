@@ -1,0 +1,154 @@
+{% load calculations %}
+{% load widget_tweaks %}
+{% load thumbnail %}
+
+				<div class="talk-comment-wrapper col-md-11  col-md-offset-1 col-sm-12 col-xs-12  talk-reply-text">				
+				{% if request.session.business != 1 %}
+					{% if reply.user.user_id == user %}
+								<form  class="talk-comment-reply-delete-form" action="" method="post">
+							<input type="submit" title="Delete comment" value="" class="delete-icon">
+							<input type="hidden" name="delete">
+							<input type="hidden" name="comment_id" value="{{ reply.id }}" />	
+							{% csrf_token %}
+						</form>
+					{% endif %}
+				{% else %}
+					{% if reply.business.user == user %}
+						<form  class="talk-comment-reply-delete-form" action="" method="post">
+							<input type="submit" title="Delete comment" value="" class="delete-icon">
+							<input type="hidden" name="delete">
+							<input type="hidden" name="comment_id" value="{{ reply.id }}" />	
+							{% csrf_token %}
+						</form>		
+					{% endif %}
+				{% endif %}
+
+	
+						<form class="talk-comment-reply-up-form" action="" method="post" >
+							<input type="submit" title="Up vote" value="" class="left-nav-options  talk-arrow-up">
+							<input type="hidden" name="up" >
+							<input type="hidden" name="comment_id" value="{{ reply.id }}" />
+							{% csrf_token %}
+						</form>
+				<div class="vote-count">{{ reply.up_count|subtract:reply.down_count }}</div>
+						
+						<form class="talk-comment-reply-down-form" action="" method="post" >
+							<input type="submit" name="down" title="Down vote" value="" class="left-nav-options  talk-arrow-down">
+							<input type="hidden" name="down" >
+							<input type="hidden" name="comment_id" value="{{ reply.id }}" />
+							{% csrf_token %}
+						</form>
+				
+	
+				<div class="talk-img-container talk-comment-img ">
+					{% thumbnail reply.user.avatar "70x70" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+						{% thumbnail reply.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+
+				</div>
+				<div class="item-talk-user"><a href="/{{ reply.user.user_id.username }}{{ reply.business.official_tag }}"> {{ reply.user.user_id.get_full_name }} {{ reply.business.name}}</a>												
+				</div>
+
+				<div class="item-date-time talk-time"> {{ reply.added  | feed_time}}</div>	
+				<div class="col-md-10 col-sm-12 col-xs-12 reply-text ">					
+					<p>{{ reply.comment }}</p></div>					
+			</div>			
+	
+				</div>	
+
+<script>
+	$('.talk-comment-wrapper').hover(
+	function(){$(this).find('.delete-icon').show();},
+	function(){$(this).find('.delete-icon').hide();}
+	 );
+</script>
+<script>
+	 $('.feed').on('submit','.talk-comment-reply-delete-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+	    var $form=$(this);
+	    var data = $form.serialize();
+                $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+		   		$(this).parent().remove();
+            	}
+            });
+            return false;        
+        });       	
+</script>
+<script>
+        $('.feed').on('submit','.talk-comment-up-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	}
+            });
+            return false;        
+        });       
+</script>
+<script>
+        $('.feed').on('submit','.talk-comment-down-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	}
+            });
+            return false;        
+        });       
+</script>
+
+<script>
+        $('.feed').on('submit','.talk-comment-reply-up-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	}
+            });
+            return false;        
+        });       
+</script>
+
+<script>
+        $('.feed').on('submit','.talk-comment-reply-down-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	}
+            });
+            return false;        
+        });       
+</script>

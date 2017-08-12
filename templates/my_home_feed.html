@@ -1,0 +1,107 @@
+{% load thumbnail %}
+{% load calculations %}   
+{% load endless %}
+{% paginate user_feed_obj %}    	
+
+{% for feed in user_feed_obj %}		
+
+{% include 'common_feed.html' %}
+
+{% endfor %}
+
+	
+{% show_more " " %}
+	<!--{% show_pages %}-->
+	<script type="text/javascript" src="/static/js/masonry.js"></script>
+<script>		
+	$(function() {
+		 $( ".item" ).show();
+			var container = document.querySelector('.feed');
+			var msnry = new Masonry( container, 
+			{			
+			columnWidths:340,
+			gutter:40,
+			itemSelector: '.item',
+			stamp: ".static",
+			isFitWidth: true,
+			isAnimated: true,
+			});		
+		});		
+
+</script>
+
+<script>
+$('.star').raty('destroy');
+$('.star').raty({
+	width:140,
+	starOff : '/static/img/star_off.png', 
+	starOn : '/static/img/star_on.png', 
+	score: function() {
+	return $(this).attr('data-score');
+	},
+	
+   click: function(score, evt) {	   	
+    var b = $('#star-rate').val();
+    var c = $(this).closest("form").find('input[name|="rating_tag_id"]').val();
+    var d = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+          $.ajax({
+			type: 'POST',          
+			url: '',			
+			data:{'rated':score,'rate': b,'rating_tag_id':c, 'csrfmiddlewaretoken':d},
+			context: this,
+            success: function(data){  			   
+			$(".overlay-back2").show().delay(1500).fadeOut();
+			$(".rating-alert").show().delay(1500).fadeOut();
+			   }         
+	});
+    }
+}); 
+
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.magnific-popup.js"></script>
+<script>
+$('.link1').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+    gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+  // other options
+});
+});
+</script>
+<script>
+$('.link2').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+  gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+
+});
+});
+
+</script>
+
+<Script>
+$('.big-billboard').magnificPopup({ 
+  type: 'image'
+});
+</Script>
+
+
+
+<script>
+$('.feed').on('click','.close-wish',function() {
+   var docHeight = $(this).closest('.item-wish').height();
+  $(this).closest(".item-wish").append("<div id='disabled-wish'><h3 class='text-center'>This wish is closed by user.</h3></div>");
+   $("#disabled-wish")
+      .height(docHeight)
+      .addClass('disabled-wish');
+});
+</script>
+

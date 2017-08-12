@@ -1,0 +1,62 @@
+{% load endless %}
+{% paginate profile_feed_obj %}    	
+
+{% for feed in profile_feed_obj %}		
+{% include 'common_feed.html' %}
+{% endfor %}
+
+	
+{% show_more " " %}
+	<!--{% show_pages %}-->
+<script type="text/javascript" src="/static/js/masonry.js"></script>
+
+<script>
+	    $('.item').delay(1000).show();		
+		
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, 
+			{			
+			columnWidths:340,
+			gutter:40,
+			itemSelector: '.item',
+			stamp: ".static",
+			isFitWidth: true,
+			isAnimated: true,
+			});		
+
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.magnific-popup.js"></script>
+<script>
+$('.link1').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+    gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+  // other options
+});
+});
+</script>
+<script>
+$('.link2').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+  gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+
+});
+});
+
+</script>
+
+<Script>
+$('.big-billboard').magnificPopup({ 
+  type: 'image'
+});
+</Script>

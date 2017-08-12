@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}
+{% block content %}
+{% load endless %}
+<div class="top-navs">	
+</div>    
+ {% if error_message != "null" %}<p style="color: red;">{{ error_message }}</p>{% endif %}
+    
+ <div class="wrapper">
+    <div class="feed">
+ 	 <div class="start-talk">
+		<p>Hello lets start a talk, challo appa talk start kariye</p>
+		<form action="" method="post">
+			{{ talk_form.as_p }}
+			<input type="submit" name="talk" value="Start talk">
+			{% csrf_token %}
+		</form>
+		
+		
+	 </div>	   
+    <div class="item activity" >
+		{% for activity in activity_obj %}
+			{% if activity.type == "B" %}
+			<p>	<a href="/{{ activity.user.user_id.username }}">{{ activity.user.user_id.username }}</a> added <a href="/business/{{ activity.business.official_tag }}">{{ activity.business.name }}</a> as new business connection, {{ activity.added }}	
+			</p>
+			{% elif activity.type == "C" %}
+			<p>	<a href="/{{ activity.user.user_id.username }}">{{ activity.user.user_id.username }}</a> commented "{{ activity.comment}}" in talk <a href="/talks/{{ activity.talk.slug }}">{{ activity.talk.title }}</a>, {{ activity.added }}
+			</p>
+			{% else %}
+			<p>	<a href="/{{ activity.from_user.username }}">{{ activity.from_user.username }}</a> and <a href="/{{ activity.to_user.username }}">{{ activity.to_user.username }}</a> became friends	
+			</p>
+			{% endif %}
+		{% endfor %}	
+		</div>
+		
+	{% paginate feed_obj %}
+	{% for feed in feed_obj %}	
+		{% if feed.feed_type == "W" %}
+			<div class="item wish" >
+		
+						
+						
+						<div class="item-content">
+						<div class="xarrow-left"></div>
+			
+						<div class="img-container">
+							{% thumbnail feed.user.avatar "120x120" crop="center" as im %}
+								<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+													
+						</div>
+						
+						<div class="item-top-content">
+						
+						<div class="item-date-time"><a>{{ feed.added | feed_time }}</a></div>
+						<div class="item-date-time-img"></div>
+						<div class="item-user"><a href="{% url 'profile_detail' username=feed.user.user_id.username %}"> {{ feed.user.user_id.get_full_name }} </a></div>	
+						<div class="item-user-city-img"></div><div class="item-user-city">{{ feed.user.city }}</div>
+						<div class="sitem-rewish-img"></div>	
+						</div> 
+						<div class="item-text"><a>{{ feed.wish.wish_text }}</a>.
+						</div>
+						
+						<div class="tags">{% for tag in feed.wish.tags.all %}<a class="tag-name"> {{tag.name}} </a>{% endfor %}</div></a>
+						
+						
+						</div>
+
+						<div class="item-wish-footer">									
+							<form action="" method="post">
+								{% if feed.wish_id in rewish_obj %}
+									<input class="wish-botton" type="submit" value="Re-wished" disabled>
+								{% else %}
+									<input  class="wish-botton" name="re-wish" type="submit"  value="Re-wish" >
+									<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}" />
+								{% endif %}
+								{% csrf_token %}
+							</form>		
+						
+						<div class="message"><a  href="/messages/{{ feed.user.user_id.username }}" >Send Message</a></div>			
+						</div>
+						</div>
+		    	
+		    		
+	{% elif feed.feed_type == "RW" %}
+	<div class="item rewish">
+				
+					<div class="item-content">
+						
+						<div class="arrow-left"></div>
+			
+						<div class="img-container">
+							{% thumbnail feed.wish.user.avatar "120x120" crop="center" as im %}
+								<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+													
+						</div>
+						
+							<div class="item-top-content">
+							
+							<div class="item-date-time"><a>{{ feed.added | feed_time }}</a></div>
+							<div class="item-date-time-img"></div>
+							
+							<div class="item-user"><a href="{% url 'profile_detail' username=feed.wish.user.user_id.username %}"> {{ feed.wish.user.user_id.get_full_name }} </a></div>	
+							<div class="item-user-city-img"></div><div class="item-user-city">{{ feed.wish.user.city }}</div>
+							<div class="sitem-rewish-img"></div>	
+							</div> 
+							<div class="item-text">{{ feed.wish.wish_text }}.</div>
+									
+					
+						
+					
+						<div class="wish-user"> 	
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}">{{ feed.user.user_id.get_full_name }}</a>
+						
+						</div>
+	
+					
+						<div class="tags">{% for tag in feed.wish.tags.all %}<a class="tag-name"> {{tag.name}} </a>{% endfor %}</div>
+				</div>				
+					<div class="item-rewish-footer">									
+					<form action="" method="post">
+					{% if feed.wish_id in rewish_obj %}
+						<input class="rewish-botton" type="submit" value="Re-wish" disabled>
+						{% else %}
+						<input  class="rewish-botton" type="submit" name="re-wish" value="Re-wish">
+						<input type="hidden" name="wish_id" value="{{ feed.wish_id }}" />
+						{% endif %}
+						{% csrf_token %}
+					</form>
+				<div class="message"><a  href="/messages/{{ feed.user.user_id.username }}" >Send Message</a></div>			
+				</div>
+					
+	</div>
+		
+	{% elif feed.feed_type == "B" %}
+		
+	<div class="item Billboard ">
+			{% thumbnail feed.billboard.billboard "340" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+			<a href="/business/{{ feed.business.official_tag }}"><font color="green">{{ feed.business.name }}</font></a>, {{ feed.added }}
+			
+			<form action="" method="post">
+				<input type="submit" name="share" value="Share">
+				<input type="hidden" name="billboard_id" value="{{ feed.billboard_id }}" />
+				<input type="hidden" name="business_id" value="{{ feed.business_id }}" />
+			{% csrf_token %}
+			</form>
+			
+	</div>
+	{% elif feed.feed_type == "SB" %}
+	<div class="item shared-billboard">
+			{% thumbnail feed.billboard.billboard "350" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+			<a href="/business/{{ feed.billboard.business.official_tag }}"><font color="green">{{ feed.billboard.business.name }}</font></a>, {{ feed.added }},
+			Shared by <a href="{% url 'profile_detail' username=feed.user.user_id.username %}">{{ feed.user.user_id.username }}</a>
+			<form action="" method="post">
+				<input type="submit" name="share" value="Share">
+				<input type="hidden" name="billboard_id" value="{{ feed.billboard_id }}" />
+				<input type="hidden" name="business_id" value="{{ feed.business_id }}" />
+			{% csrf_token %}
+			</form>
+			
+	</div>
+		
+	{% elif feed.feed_type == "T" %}
+	<div class="item talk ">
+	<div class="talk-content">
+		
+					<div class="talk-top-content">
+							<div class="talking-people-img"></div><div class="talking-people"><a>10 people talking</a></div>
+							<div class="item-date-time"><a>{{ feed.added | feed_time }}</a></div>
+							<div class="item-date-time-img"></div>
+				</div>
+										
+				<div class="talk-text"><a href="/talks/{{ feed.talk.slug }}">{{ feed.talk.title }}</a></div>
+				<div class="talk-img-container">
+				{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+				</div>
+	
+						<div class="item-talk-user"><a href="/{{ feed.user.user_id.username }}"> {{ feed.user.user_id.get_full_name }} </a></div>	
+			
+				
+	</div>
+	
+				<div class="tags">{% for tag in feed.talk.tags.all %}<a class="tag-name"> {{tag.name}} </a>{% endfor %}</div>
+	
+				
+				
+	
+	
+	</div>
+	{% elif feed.feed_type == "TC" %}
+	<div class="item talk-comment">
+						
+			{% thumbnail feed.user.avatar "50x50" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+			<a href="/{{ feed.user.user_id.username }}">{{ feed.user.user_id.username }}</a> joined a talk, <a href="/talks/{{ feed.talk.slug }}"><font color="goldenrod">{{ feed.talk.title }}</font></a>, {{ feed.added }}
+			
+			<p class="tags">
+				{% for tag in feed.talk.tags.all %}
+				<a class="tag-name">{{ tag.name }}</a>
+				{% endfor %}
+			</p>
+	</div>
+	{% elif feed.feed_type == "R" %}
+	<div class="item rating ">
+			{% thumbnail feed.user.avatar "50x50" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+			<a href="/{{ feed.user.user_id.username }}">{{ feed.user.user_id.username }}</a>
+			{% if feed.rating.owned_type == "O"%}
+				rated a product, <b><font color="grey">{{ feed.rating.rating_tag.tag.name }}</font></b>, {{ feed.rating.rating }} out of 5,
+			{% else %}	
+				owns a product, <b><font color="grey">{{ feed.rating.rating_tag.tag.name }}</font></b>,
+				Rated this product {{ feed.rating.rating }} out of 5,
+			{% endif %}
+			total
+			{{ feed.rating.rating_tag.rating|div:feed.rating.rating_tag.count }}
+			by {{ feed.rating.rating_tag.count }} user(s), {{ feed.added }}
+			<form action="" method="post">
+				<select name="rated">
+					<option value="5">5</option>
+					<option value="4">4</option>
+					<option value="3">3</option>
+					<option value="2">2</option>
+					<option value="1">1</option>
+				</select>
+				<input type="submit" name="rate" value="Rate">
+				<input type="hidden" name="rating_tag_id" value="{{ feed.rating.rating_tag_id }}" />
+			{% csrf_token %}
+			</form>
+	</div>
+	{% endif %}
+	{% endfor %}
+	{% show_pages %}
+	</div>
+</div>	
+<script>
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, {
+		columnWidth:380,
+		itemSelector: '.item',
+		stamp: ".activity",
+		isFitWidth: true,
+		  animationOptions: {
+    duration: 400
+  }
+			});
+	</script>
+
+
+{% endblock %}

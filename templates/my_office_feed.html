@@ -1,0 +1,117 @@
+{% load calculations %}
+{% load thumbnail %}
+{% load endless %}
+{% paginate biz_feed_obj %}    	
+
+		{% for feed in 	biz_feed_obj %}
+			{% if feed.feed_type == "B" %}		
+
+			<div class="item billboard">
+				<div class="billboard_image billboard-one"  data-imageurl="{{ feed.billboard.billboard.url }}">
+		<a class="big-billboard" href="{{ feed.billboard.billboard.url }}">	
+
+				{% thumbnail feed.billboard.billboard "340" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+</a>
+				</div>		
+				
+				<div  class="user-action-wrapper">				
+					
+					<div class="talk-img-container">
+						{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					</div>
+			
+					<div class="item-talk-user"><a href="/business/{{ feed.business.official_tag }}">{{ feed.business.name }}</a>																	
+							<span>added this billboard</span>
+					</div>	
+				</div>			
+				<div class="item-wish-footer col-md-12">									
+				<form action="" method="post">
+					<div class="share-btn">&nbsp;&nbsp;<div class="glyphicon glyphicon-random drk-btn-color" ></div>&nbsp;Share </div>
+					<input type="hidden" name="share"/>
+					<input type="hidden" name="billboard_id" value="{{ feed.billboard_id }}" />
+					<input type="hidden" name="business_id" value="{{ feed.business_id }}" />
+				    <input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</form>
+				</div>
+				
+			</div>
+			{% elif feed.feed_type == "T" %}			
+		<div class="item talk">
+			<div class="talk-content">
+				<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ feed.added | feed_time }}</div>
+				<a href="/talks/{{ feed.talk.slug }}"><div class="talk-text"><p>{{ feed.talk.title }}</p></div></a> 
+				<div class="tags-talk">{% for tag in feed.talk.tags.all %}<a class="talk-tag-name"> {{tag.name}} </a>{% endfor %}</div>
+				<div class="talk-img-container">
+					{% if feed.user.avatar %}
+						{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% else %}
+						{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% endif %}
+				</div>
+				<div class="item-talk-user">
+					<a href="/{{ feed.user.user_id.username }}"> {{ feed.user.user_id.get_full_name }} {{ feed.business.name }}</a>												
+					<span>started this talk</span>
+				</div>
+			</div>					
+		</div>
+
+			{% elif feed.feed_type == "TC" %}
+		<div class="item talk">		
+			<div class="talk-content">				
+				<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ feed.added | feed_time }}</div>
+				<a href="/talks/{{ feed.talk.slug }}"><div class="talk-text"><p>{{ feed.talk.title }}</p></div></a> 
+				<div class="tags-talk">{% for tag in feed.talk.tags.all %}<a class="talk-tag-name"> {{tag.name}} </a>{% endfor %}</div>
+				<div class="talk-img-container">
+					{% if feed.user.avatar %}
+						{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% else %}
+						{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% endif %}
+				</div>				
+				<div class="item-talk-user">
+					<a href="/{{ feed.user.user_id.username }}">{{ feed.user.user_id.get_full_name }} {{ feed.business.name }}</a>
+					<span>joined this talk</span>
+				</div>			
+			</div>	
+		</div>
+
+			{% endif %}
+			
+			
+				
+		{% endfor %}
+
+{% show_more " " %}
+<script type="text/javascript" src="/static/js/masonry.js"></script>
+<script>
+		$(function() {
+	    $('.item').show();		
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, {
+		columnWidth:340,
+		gutter: 40, 		
+		itemSelector: '.item',
+		stamp: ".static",
+		isFitWidth: true,
+		isAnimated: true,
+		});		
+		});		
+</script>
+<Script>
+$('.big-billboard').magnificPopup({ 
+  type: 'image'
+});
+</Script>
+

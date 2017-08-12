@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}   
+
+{% block head %}
+<meta property="og:title" content="{{ wish_obj.wish_text }}" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="sellbig.in"/>
+<meta property="og:url" content="http://sellbig.in/wish/{{ wish_obj.slug }}/" />
+<meta property="og:description" content="{% for tag in wish_obj.tags.all %}{{tag.name}} {% endfor %}" />
+{% for img in wish_obj.wish_image_set.all %}
+	{% if forloop.counter = 1 %}
+		<meta property="og:image" content="{{ img.image.url }}" />
+	{% endif %}
+{% endfor %}													
+
+{% endblock %}
+
+{% block content%}
+<br><br><br>
+<div class="">
+{% if wish_obj.wish_image_set.all %}
+<div class=" item-wish talk-comment col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+<div class="col-md-6">
+{% else %}
+<div class=" item-wish talk-comment col-md-6 col-xs-12 col-md-offset-3">
+<div class="col-xs-12">
+{% endif %}
+
+
+<br>
+<ol class="breadcrumb">	
+  <li><a href="/search/?q=&cat={{ wish_obj.category.name }}">{{ wish_obj.category.name }}</a></li>
+  <li class=""><a href="/search/?q=&sub_cat={{ wish_obj.subcategory.name }}">{{ wish_obj.subcategory.name }}</a></li>
+</ol>
+	<h4 class="text-center text-handler">{{ wish_obj.wish_text }}</h4>
+	<div class="col-xs-12">
+	<h5 class="text-handler">{{ wish_obj.desc |safe}}</h5>
+	</div>
+	<div class="col-xs-12 ">
+		<div class="tags">
+			{% for tag in wish_obj.tags.all %}
+				<a class="tag-name" href='/search/?q={{ tag.name }}'> 
+					{{tag.name}}
+				</a>
+			{% endfor %}						
+		</div>												
+	</div>
+
+	<div class="row ">
+
+		<div class="col-md-12">
+			<br>
+		<div class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-fw fa-money"></i> &nbsp;<b>Price :</b> {{ wish_obj.price }}</div>
+		</div>	
+		<div class="col-md-12">
+		<div class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-fw fa-map-marker"></i> &nbsp;<b>Location :</b> {{ wish_obj.location.name_std }}</div>
+		</div>
+		<div class="col-md-12">
+		<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-clock-o  fa-fw"></i> &nbsp;<b>Added on :</b> {{ wish_obj.added }}</div>
+		</div>
+
+{% if wish_obj.contact %}		
+		<div class="col-md-12">
+		<div class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-fw fa-phone"></i> &nbsp;<b>Phone :</b> {{ wish_obj.contact }}{% if wish_obj.whatsapp_chk %} <i class="fa fa-whatsapp fa-inverse fa-fw "  style="font-size:15px; vertical-align: middle;color:green"></i>( Available on Whatsapp ){% endif %}</div>
+		</div>
+{% endif %}		
+		<div class="col-md-12">
+		<div class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-fw fa-diamond"></i> &nbsp;<b>Ad type :</b> <a href="/{{ wish_obj.user.user_id.username }}">{{ wish_obj.user.user_id.get_full_name }} </a> wants to  {% if wish_obj.wish_type == "sell"%}sell {% endif %}  {% if wish_obj.wish_type == "buy"%}buy {% endif %}</div>
+		</div>
+
+		<div class="col-md-12">
+			<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;<div class="btn btn-lg btn-danger"><b>Price</b>  {{ wish_obj.price }}</div>
+		</div>
+
+		<div class="col-md-12">
+		<br>
+				<div class="talk-img-container talk-title-img">
+			{% thumbnail wish_obj.user.avatar "100x100" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}													
+		</div>			
+		<div class="item-talk-user"><a href="/{{ wish_obj.user.user_id.username }}">{{ wish_obj.user.user_id.get_full_name }} </a>												
+		<span>added this ad</span>
+		</div>
+
+		</div>
+
+<div class="col-md-12 ">
+	<br>
+<div class="">
+{% if user.is_authenticated %}	  
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-default rewish-btn-wish  tooltip-marker" data-placement="bottom" title="Share" >
+	<form action="" method="post" class="">
+	{% if wish_obj.rewish_count > 0 %}
+		{{ wish_obj.rewish_count }}
+	{% endif %}		
+		<span class="glyphicon glyphicon-refresh text-muted"></span>
+		&nbsp;Share
+		<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+		<input  type="hidden"  name="wish_id" value="{{ wish_obj.id }}" />
+	</form>
+  </button>
+&nbsp;
+{% endif %}
+
+  {% if wish_obj.user.user_id.username != request.user.username %}
+	  <button class="btn-sm btn btn-default msg-btn-wish tooltip-marker" data-placement="bottom" title="Send Message"  data-username="{{ wish_obj.user.pk }}"  data-fullname="{{ wish_obj.user.user_id.get_full_name }}" data-loginstatus="{{ user.is_authenticated }}" data-redirecturl="{{ request.get_full_path }}">
+			<span class="glyphicon glyphicon-envelope text-muted"></span>
+		&nbsp;Send Message
+	  </button>
+  {% endif %}
+  {% if wish_obj.user.user_id.username == request.user.username %}
+  <button class="btn btn-sm btn-default close-btn-wish   tooltip-marker" data-placement="bottom" title="Disable Ad" >
+	<form action="" method="post" class="">
+		<span class="glyphicon glyphicon-remove text-muted"></span>
+		<input  type="hidden"  name="wish_id" value="{{ wish_obj.id }}"/>							
+		<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+		&nbsp;Disable Ad
+	</form>
+  </button>
+  {% endif %}  
+ <br>
+ <br>
+
+</div>
+</div>
+		
+	</div>
+
+</div>
+
+
+<div class="col-md-6">
+{% if wish_obj.wish_image_set.all %}
+
+	<div class=" text-center">
+
+    <!-- main slider carousel -->
+    <div class="row">
+
+        <div class="col-md-12" id="slider">
+		<br>
+
+                <div class="col-md-12" id="carousel-bounding-box">
+                    <div id="myCarousel" class="thumbnail carousel slide">
+                        <!-- main slider carousel items -->
+                        <div class="carousel-inner ">
+						{% for img in wish_obj.wish_image_set.all %}
+							{% if forloop.counter = 1 %}
+                            <div class="active item carousel-item link1" data-slide-number="0">
+								<a href="{{ img.image.url }}">
+								{% thumbnail img.image "500x320" crop="center" as im %}
+									<img  class="" src="{{ im.url }}" width="100%" height="">
+								{% endthumbnail %}
+								</a>
+                            </div>			
+							{% elif forloop.counter > 1 %}
+                            <div class="item carousel-item link1" data-slide-number="{{forloop.counter}}">
+								<a href="{{ img.image.url }}">
+								{% thumbnail img.image "500x320" crop="center" as im %}
+									<img  class="" src="{{ im.url }}" width="100%" height="">
+								{% endthumbnail %}
+								</a>
+                            </div>
+                            {% endif %}
+			{% endfor %}													
+
+
+                        </div>
+
+						<a class="carousel-arrows carousel-control left" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+
+                        <a class="carousel-arrows carousel-control right" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+
+                </div>
+
+        </div>
+    </div>
+    <!--/main slider carousel-->
+
+  	<!-- thumb navigation carousel -->
+    <div class="col-md-12 hidden-sm hidden-xs wish-images link1" id="">        
+            <!-- thumb navigation carousel items -->
+          <ul class="list-inline">
+			{% for img in wish_obj.wish_image_set.all|slice:"1:" %}
+          <li class=""> <a href="{{ img.image.url }}" >
+					{% thumbnail img.image "80x80" crop="center" as im %}
+					<img  class="thumbnail" src="{{ im.url }}">
+					{% endthumbnail %}
+
+          </a></li>
+          
+			{% endfor %}													
+			</ul>
+    </div>
+  
+
+
+	</div>
+{% endif %}						
+	
+</div>
+
+</div>
+<div id="msg-modal" class="modal fade">
+{% include 'new_message.html' %}
+</div><!-- /.modal -->
+<div class="col-md-12">
+<br>
+<br>
+<br>
+</div>
+</div>
+<script>
+		$('#myCarousel').carousel({
+			interval:false
+});
+
+// handles the carousel thumbnails
+$('[id^=carousel-selector-]').click( function(){
+  var id_selector = $(this).attr("id");
+  var id = id_selector.substr(id_selector.length -1);
+  id = parseInt(id);
+  $('#myCarousel').carousel(id);
+  $('[id^=carousel-selector-]').removeClass('selected');
+  $(this).addClass('selected');
+});
+
+// when the carousel slides, auto update
+$('#myCarousel').on('slid', function (e) {
+  var id = $('.item.active').data('slide-number');
+  id = parseInt(id);
+  $('[id^=carousel-selector-]').removeClass('selected');
+  $('[id^=carousel-selector-'+id+']').addClass('selected');
+});
+		
+		</script>
+		
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.magnific-popup.js"></script>
+<script>
+$('.link1').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+closeOnBgClick:'true',	
+  // other options
+});
+});
+</script>
+<script>
+$(".disable-wish").on('click',function(){
+$(".item-wish").addClass('disabled-wish');
+});
+</script>
+<script>
+$('.dropdown-toggle').dropdown();
+</script>	
+<script>
+
+	var username;
+	$('.msg-btn-wish').on('click',function(){
+	var loginstatus=$(this).data('loginstatus');
+	if (loginstatus=="True"){
+	$('#msg-modal').modal();
+	username=$(this).data('username');
+	var fullname=$(this).data('fullname');
+	
+	$('#msg-modal').find('.modal-title').html('<p>Send a message to '+ fullname +'</p>');
+	}
+	else
+	{	
+		redirecturl=$(this).data('redirecturl');
+		window.location.href="/accounts/login/?&next=" + redirecturl;
+		}
+	});
+	$('.msg-btn-wish').one('click',function() { // catch the form's submit event
+	$('<input />').attr('type', 'hidden')
+          .attr('name', "to_user")
+          .attr('value', username)
+          .appendTo('.send-message-form');
+      return true;
+	});
+	
+</script>
+
+<script>
+	$('.rewish-btn-wish').on('click',function() { // catch the form's submit event
+    var wishid = $(this).children("").find('input[name|="wish_id"]').val();
+    var coin = $(this).children("").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'wish_id':wishid,'re-wish':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".rewish-alert").show().delay(1500).fadeOut();
+		}         
+		});  		
+	});
+</script>
+<script>
+	$('.close-btn-wish').on('click',function() { // catch the form's submit event
+    var wishid = $(this).children("").find('input[name|="wish_id"]').val();
+    var coin = $(this).children("").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'wish_id':wishid,'disable':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".rewish-alert").show().delay(1500).fadeOut();
+		}         
+		});  		
+	});
+</script>
+
+
+<script>
+$('.close-btn-wish').on('click',function() {
+
+   var docHeight = $('.item-wish').height();
+
+   $(".item-wish").append("<div id='disabled-wish'><h2 class='text-center'>This wish is closed by user.</h2></div>");
+
+   $("#disabled-wish")
+      .height(docHeight)
+      .addClass('disabled-wish');
+
+});
+</script>
+{% if wish_obj.status == 'D' %}
+<script>
+   var docHeight = $('.item-wish').height();
+   $(".item-wish").append("<div id='disabled-wish'><h2 class='text-center'>This Ad is closed by user.</h2></div>");
+   $("#disabled-wish")
+      .height(docHeight)
+      .addClass('disabled-wish');
+</script>
+<script>
+$('.tooltip-marker').tooltip();
+</script>
+<div class="overlay-back2"></div>
+<div class="Closewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Ad Closed Successfully </div></div>
+<div class="rewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Shared Successfully </div></div>
+</div>	
+
+<script>
+	$('.feed').on('click','.rewish-btn',function() { // catch the form's submit event
+    var wishid = $(this).closest("form").find('input[name|="wish_id"]').val();
+    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'wish_id':wishid,'re-wish':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".rewish-alert").show().delay(1500).fadeOut();
+		},
+		statusCode: {
+		404: function() {
+		  alert('This Ad seems to be closed by user. Please refresh the page.');
+		}}
+		 });  		
+	});
+</script>
+
+{% endif %}
+{% endblock %}

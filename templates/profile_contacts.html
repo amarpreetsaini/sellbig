@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block content%}
+<br><br>
+<br><br>
+
+<div class="feed ">
+<div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+<div class="panel panel-default">
+ <div class="panel-heading text-center"><h4> Friends List</h4></div>
+ <div class="panel-body">
+
+			<!--
+		<ul class="col-md-12 col-sm-12 col-xs-12 nav nav-tabs nav-justified">
+			<li class="active" >
+				<a href="#contact-friends2" data-toggle="tab">People</a>
+			</li>
+<li class="tooltip-marker" data-placement="bottom" title="Open Business contacts">
+				<a href="#contact-businesses2" data-toggle="tab">Businesses</a>
+			</li>
+		</ul>
+-->			
+	
+
+	<div class="col-md-12 col-sm-12 col-xs-12" >
+		<div class="" id="contact-friends2">	
+			{% if myfriends.count = 0 and request.user.facebook_id == NULL %}
+			<p class="text-center ">Connect with facebook to see your friends that are already using sellbig.in</p>
+			{% if not request.user.facebook_id  %}	
+			<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+			<div class="form-group">
+			<form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
+				<a class="btn btn-facebook btn-sm tooltip-marker" data-placement="bottom" title="Connect with facebook helps you to invite your facebook friends." href="javascript:void(0);" onclick="F.connect(this.parentNode);">
+				<span class="fa fa-facebook-square fa-lg"></span> &nbsp;<b>Connect with Facebook</b></a><input type="hidden" value="{{ request.path }}" name="next" />
+				<input type="hidden" name="connect_facebook" value="1">
+				{% csrf_token %}
+			</form>
+			</div>
+			</div>
+
+			{% endif %}
+
+			{% endif %}
+
+
+		{% if request.user.facebook_id != NULL and request.user.username = username %}	
+		<div class="form-group col-md-5 col-sm-8 pull-right ">
+		<form class="form-horizontal" id="friend-invite-form" role="form" >
+			<br>
+				<div class=" ">
+				<br>
+				<div class="col-md-12 highlight">
+<!--
+				<p class=" text-center"><b>Invite your Facebook friends to doroko.com</b></p>
+				<input id="invite-friend-box" class="form-control simplebox" placeholder="Search your friends and invite them here" type="text" name="invite-friend-box"/>
+				<br>
+
+				<p class="text-center">Your facebook friends already on site </p>
+		</form>
+-->
+				<p class="text-center">Your facebook friends already on site </p>
+				<ul class="list-group">
+				{% for find in find_obj %}
+				  <li class=" text-center">	
+					<div class="col-xs-6 col-md-4">
+				  	{% thumbnail find.user_info.avatar "50x50" crop="center" as im %}
+						<a class="" href="/{{ find.username }}" >
+							<img class="img-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						</a>
+					{% endthumbnail %}				  
+					      <div class="caption">
+							<a href="/{{ find.username }}" >{{ find.get_full_name }}</a>
+						  </div>
+					<form class="form-horizontal" id="" role="form" method="post" >	
+						<div class="add-fb-friend btn btn-success btn-xs" data-username="{{ find.username }}">Add friend</div>
+						<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+					</form>
+					</div>
+				  </li>
+				{% endfor %}
+				</ul>
+
+				</div>
+				</div>
+			</div>
+	
+		{% endif %}
+			
+
+			{% for friend in myfriends %}
+				<div class="contactslist">
+					{% thumbnail friend.avatar "100x100" crop="center" as im %}
+						<a href="/{{ friend.user_id.username }}" >
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						</a>
+					{% endthumbnail %}	
+					<p class="text-center"><a href="/{{ friend.user_id.username }}">{{ friend.user_id.get_full_name}}</a></p>			
+				</div>		
+			{% endfor %}
+		</div>
+<!--
+
+		<div class="tab-pane fade" id="contact-businesses2">	
+			{% if businesses.count = 0 %}
+		<br></br>
+				<p class="text-center">No business contacts</p>
+			{% endif %}
+
+				{% for business in businesses %}
+					<div class="contactslist">
+						{% thumbnail business.business.logo "100x100" crop="center" as im %}	
+							<a href="/business/{{ business.business.official_tag }}">
+								<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							</a>
+						{% endthumbnail %}
+					<p class="text-center"><a href="/business/{{ business.business.official_tag }}">{{ business.business.official_tag }}</a></p>			
+					</div>
+
+				{% endfor %}
+				</div>
+-->
+	</div>
+    <div id="fb-root"></div>
+</div>
+</div>
+	</div>
+
+</div>
+<div class="overlay-back2"></div>
+<div class="friendrequest-sent-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Friend Request Sent Successfully </div></div>
+
+<script src="/static/js/jquery-ui-1.10.4.custom.js"></script>
+<script>
+$( "input#invite-friend-box" ).autocomplete({
+	source: "{% url 'invite_friends' %}" ,
+	minLength: 1,
+	 autofocus: true,
+    focus: function(event, ui) {
+        $( "#invite-friend-box" ).val( ui.item.value );
+        return false;
+        },
+    select: function( event, ui ){
+		$( "#invite-friend-box" ).val( ui.item.value );
+        return false;
+        },
+
+})
+.data( "ui-autocomplete")._renderItem = function( ul, item ) {
+        var fb_pic_path = '<img width="50px" height="50px" class="media-object" src="http://graph.facebook.com/' + item.label + '/picture?type=square">' ;	
+        console.log(fb_pic_path);
+        return $( "<li onclick='fbmsg("+item.label+");' class='media margin-top-zero'></li>" )
+        .data( "item.autocomplete", item )
+        .append( "<a class='pull-left' >" + fb_pic_path +"</a>" + "<div class='media-body'> <h5 class='media-heading'>" + item.value + "</h5></div>" )
+        .appendTo( ul );
+  };
+
+function fbmsg(to){
+ $.ajaxSetup({ cache: true });
+$.getScript('//connect.facebook.net/en_UK/all.js', function(){
+FB.init({
+  appId: 415278271918510,          
+  xfbml: true, 
+  cookie: true
+});     
+  FB.ui({
+          method: 'send',
+          display: 'iframe',
+          to:to,
+          link: 'http://www.doroko.com',
+          });
+	  });
+}
+</script>
+
+<script>
+	$('.add-fb-friend').click(function() { // catch the form's submit event
+		var username=$(this).data('username');
+	    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '/friends/invite/'+username+'/',
+		data:{'to_user':username,'csrfmiddlewaretoken':coin},
+		context:this,
+		success: function(data){
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".friendrequest-sent-alert").show().delay(1500).fadeOut();				
+		$(this).parent().parent().remove();
+		}         
+		});  		
+	});
+</script>
+{% endblock %}

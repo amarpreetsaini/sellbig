@@ -1,0 +1,107 @@
+{% load calculations %}
+{% load widget_tweaks %}
+{% load thumbnail %}
+
+			<li  class="">
+				
+				<div class="talk-comment-wrapper col-md-12 col-sm-12 col-xs-12 ">	
+					
+				{% if request.session.business != 1 %}
+					{% if comment.user.user_id == user %}
+					<form class="talk-comment-delete-form" action="" method="post" >
+						<input type="submit"  title="Delete comment" value="" class="delete-icon">
+						<input type="hidden" name="delete" />		
+						<input type="hidden" name="comment_id" value="{{ comment.id }}" />
+						{% csrf_token %}
+					</form>
+					{% endif %}
+				{% else %}
+					{% if comment.business.user == user %}
+					<form class="talk-comment-delete-form" action="" method="post" >
+						<input type="submit" title="Delete comment" value="" class="delete-icon">
+						<input type="hidden" name="delete" />
+						<input type="hidden" name="comment_id" value="{{ comment.id }}" />
+						{% csrf_token %}
+					</form>
+					{% endif %}
+				{% endif %}
+					
+						<form class="talk-comment-reply-up-form" action="" method="post" >
+							<input type="submit" title="Up vote" value="" class="left-nav-options  talk-arrow-up">
+							<input type="hidden" name="up" />	
+							<input type="hidden" name="comment_id" value="{{ comment.id }}" />
+							{% csrf_token %}
+						</form>
+					<div class="vote-count">{{ comment.up_count|subtract:comment.down_count }}</div>
+
+						<form class="talk-comment-reply-down-form" action="" method="post" >
+							<input type="submit" title="Down vote" value="" class="left-nav-options  talk-arrow-down">
+							<input type="hidden" name="down" />
+							<input type="hidden" name="comment_id" value="{{ comment.id }}" />
+							{% csrf_token %}
+						</form>
+
+					
+					<div class="talk-img-container talk-comment-img">
+						{% thumbnail comment.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+						{% thumbnail comment.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+
+					</div>					
+					<div class="item-talk-user"><a href="/{{ comment.user.user_id.username }}{{ comment.business.official_tag }}"> {{ comment.user.user_id.get_full_name }} {{ comment.business.name}}</a>												
+					</div>
+
+	
+					<div class="item-date-time talk-time">{{ comment.added  | feed_time}}</div>
+					<div class="col-md-10 col-sm-12 col-xs-12"><p>{{ comment.comment }}</p></div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="talk-comment-reply"><p> Reply</p></div></div>			
+				</div>
+									
+				<div class="talk-comment-wrapper talk-reply-form1  col-md-11 col-md-offset-1 col-sm-12 col-xs-12">					
+					<div class="talk-img-container ">
+						{% thumbnail comment.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+						{% thumbnail comment.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+
+					</div>			
+					<div class="item-talk-user"><a href="/{{ comment.user.user_id.username }}{{ comment.business.official_tag }}"> {{ comment.user.user_id.get_full_name }} {{ comment.business.name}}</a>												
+					</div>
+					<div class="row">					
+					
+						<form action="" method="post" class=" col-md-10 col-sm-12 col-xs-12 pull-right talk-reply-form-id">						
+						{% render_field form.comment id="talk-reply-form" placeholder="Reply" %}
+						<button class="btn btn-danger btn-xs post-reply2 pull-right" type="button">Reply</button>
+						<input type="hidden" name="parent_id" value="{{ comment.id }}">
+						<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+						{% csrf_token %}
+					</form>
+				</div>		
+
+				</div>		
+				
+				<div class="reply-wrapper  col-md-11 col-md-offset-1 col-sm-12 col-xs-12">
+					
+				</div>
+	
+		
+		</li>
+<script>
+$('.talk-comment-wrapper').hover(
+	function(){$(this).find('.delete-icon').show();},
+	function(){$(this).find('.delete-icon').hide();}
+);
+</script>
+
+<script>
+	$('.talk-comment-wrapper').on("click",'.talk-comment-reply',function(){		
+	$(this).parent().parent().parent().find('.talk-reply-form1').css('display', 'block');
+	$(this).parent().parent().parent().find('.talk-reply-form2').css('display', 'block');
+	});
+</script>

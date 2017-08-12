@@ -1,0 +1,286 @@
+{% load widget_tweaks %}
+{% load thumbnail %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Edit Profile</title>
+	<link rel = "stylesheet" type="text/css" href="/static/css/bootstrap_small.min.css" />  
+	<link rel = "stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.4.custom.css" />
+	<link href="{{ STATIC_URL }}css/bootstrap-tagsinput.css" rel="stylesheet" type="text/css" />
+
+<style>
+	.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0px;
+    margin: 2px 0px 0px;
+    list-style: outside none none;
+	font-size: 14px;
+    background-color: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.176);
+    background-clip: padding-box;
+}
+.dropdown-menu > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.428571429;
+  color: #333333;
+  white-space: nowrap;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  text-decoration: none;
+  color: #262626;
+  background-color: #f5f5f5;
+}
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
+}
+
+#website-cover{
+	background-color: rgba(143,54,0,0.1);
+	background-image: url({{ STATIC_URL }}/img/products_tmb.png);
+	background-repeat: repeat;
+	position:fixed;
+	width:100%;
+	height:100%;
+	margin:0px!important;
+	padding:0px!important;
+	overflow:hidden;
+}
+.setting-span {
+    width: 110px;
+    text-align: left;
+}
+.label {
+    display: inline;
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #FFF;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25em;
+}
+.label-info ,.btn-danger{
+    background-color: #E35E0E;
+}
+
+.bottom-divider{
+	border-bottom: 1px solid rgb(233, 228, 219)!important;
+}
+
+</style>
+</head>
+<body>
+	<div id="website-cover"></div>	
+<br>
+<br>
+<br>
+<div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+	<div class="col-lg-4 col-xs-12 col-md-4 col-md-offset-4 panel panel-default profile-edit"> 
+
+	<div class="col-xs-12">  	 
+		<h1 class="text-center">Edit Profile </h1>
+	</div>	
+		<form action="" method="post" class="form-horizontal divider-label" enctype="multipart/form-data" id="image-upload" >
+		
+			<div class="form-group">
+				<div class="col-xs-2 col-md-2">  
+					<div class="profile-img-container">
+						{% thumbnail user.user_info.avatar "50x50" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					</div>					
+				</div>
+				
+				<div class="col-xs-8 col-md-6">  	 
+				<p>
+						{% render_field img_form.avatar type="file" id="profile-img"  %}					
+				</p>
+				</div>
+				<div class="col-xs-8 col-md-6">  
+					<button type="submit" class="btn btn-sm btn-default pull-left">Upload &nbsp;&nbsp;<span class="glyphicon glyphicon-cloud-upload"></span></button>		
+					<input type="hidden"  name="image">		
+				 {% csrf_token %}							 
+				</div>					
+			</div>					
+			 
+		</form>
+
+		<form action="" method="post" class="form-horizontal" role="form" name="signupform">
+			
+			{{ form.non_field_errors }}
+<!--
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+					{% render_field form.about_tags value="" type="text" class="form-control tagsinput simplebox" id="" placeholder="Add some tags about you" %}						
+				</div>
+				{% if form.about_tags.errors %}
+					<p class="text-danger">{{ form.about_tags.errors.as_text }}</p>
+				{% endif %}
+			</div>
+-->	
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left glyphicon glyphicon-map-marker"></i>&nbsp;Location</span>
+					<input type="text" class="col-xs-12 form-control simplebox location" id="edit-location" placeholder="Search a Closest City" {% if user_obj.location %} value="{{ user_obj.location.name_std }}" {% endif %}>
+					<input class="hidden-xs hidden-sm hidden-md hidden-lg location-id" name="location" type="hidden" value="">
+				</div>
+				{% if form.location.errors %}
+					<p class="text-danger">{{ form.location.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			<!--
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12 input-group ">
+					 <span class="input-group-addon setting-span"><i class="pull-left glyphicon glyphicon-briefcase"></i>&nbsp;Company</span>
+						{% render_field form.company type="text" class="form-control simplebox" id="" placeholder="Company you work" %}				
+					</div>
+				{% if form.company.errors %}
+					<p class="text-danger">{{ form.company.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12 input-group ">
+					 <span class="input-group-addon setting-span"><i class="pull-left glyphicon glyphicon-book"></i>&nbsp;School</span>
+					{% render_field form.education1 type="text" class="form-control simplebox" id="" placeholder="School you studied" %}				
+					</div>
+				{% if form.education1.errors %}
+					<p class="text-danger">{{ form.education1.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12 input-group ">
+					 <span class="input-group-addon setting-span"><i class="pull-left glyphicon glyphicon-book"></i>&nbsp;College 1</span>
+					{% render_field form.education2 type="text" class="form-control simplebox" id="" placeholder="College you studied" %}
+				</div>
+				{% if form.education2.errors %}
+					<p class="text-danger">{{ form.education2.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12 input-group ">
+					 <span class="input-group-addon setting-span"><i class="pull-left glyphicon glyphicon-book"></i>&nbsp;College 2</span>
+					{% render_field form.education3 type="text" class="form-control simplebox" id="" placeholder="College you studied" %}
+				</div>
+				{% if form.education3.errors %}
+					<p class="text-danger">{{ form.education3.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12 input-group ">
+					 <span class="input-group-addon	setting-span" ><i class="pull-left glyphicon glyphicon-earphone"></i>&nbsp;Phone</span>
+					{% render_field form.contact type="text" maxlength="10" class="form-control simplebox" id="" placeholder="Your phone number (Only digits)" %}
+					</div>
+				{% if form.contact.errors %}
+					<p class="text-danger">{{ form.contact.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+		-->
+			
+			<div class="form-group"> 
+					{% if request.session.new_user != 1 %}
+					<div class="col-xs-6 col-md-6  pull-left"> 
+						<a href="{% url 'profile' %}"class="btn btn-default btn-block"><span class="fa fa-reply-all"></span>&nbsp;&nbsp;Back to Profile</a>	
+					</div>			
+					<div class="col-xs-6 col-md-6  pull-right"> 
+						<button button="submit" class="btn btn-danger btn-block"><b>Save</b></button>	
+					</div>			
+					{% else %}
+					<div class="col-xs-6 col-md-6  pull-left"> 
+						<a href="{% url 'profile' %}"class="btn btn-default btn-block">Skip to profile&nbsp;&nbsp;<span class="fa fa-mail-forward"></span></a>	
+					</div>			
+					<div class="col-xs-6 col-md-6  pull-right"> 
+						<button button="submit" class="btn btn-danger btn-block"><b>Save</b></button>	
+					</div>			
+
+<!--
+					<div class="col-xs-6 col-md-6  pull-right"> 
+						<button button="submit" class="btn btn-danger btn-block"><b>Next&nbsp;&nbsp;<span class="fa fa-arrow-right"></span></b></button>	
+					</div>			
+					-->
+					{% endif %}
+
+			</div> 
+			 {% csrf_token %}
+			<input type="hidden"  name="details">		
+			  
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-tagsinput.js"></script>
+
+<script>
+$('.tagsinput').tagsinput({
+typeahead: {
+source: function (query, process) {
+	return $.getJSON(
+	'{% url "autocomplete_tag" %}',
+	{ term: query },
+	function (data) {
+	});
+	},
+	freeInput: true,
+	},
+	maxTags: 5,
+	confirmKeys: [13, 44,32]
+	});
+</script>
+
+<script src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+
+<script>
+$( "input.location" ).autocomplete({
+	source: "{% url 'autocomplete_city' %}",
+	minLength: 2,	
+	  select: function(event, ui) {
+        event.preventDefault();
+        $(".location").val(ui.item.city);
+		$(".location-id").val(ui.item.id);
+
+    },
+    focus: function(event, ui) {
+        event.preventDefault();
+        $(".location").val(ui.item.city);
+		$(".location-id").val(ui.item.id);
+    }	
+});
+</script>
+</body>
+</html>

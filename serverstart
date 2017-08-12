@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sudo service nginx stop
+sleep 5
+ps aux |grep gunicorn |awk '{print $2}' |xargs kill -9
+sleep 5
+gunicorn doroko.wsgi:application --bind 127.0.0.1:8001 --workers=5 &
+sleep 5
+sudo service nginx start
+
+
+

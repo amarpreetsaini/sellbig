@@ -1,0 +1,399 @@
+{% load thumbnail %}
+{% load calculations %}   
+	{% if feed.feed_type == "W" %}
+
+		<div class="item-wish item wish ">	
+		{% if feed.wish.status == 'D' %}
+		<div class="disabled-wish"><p class='lead text-center'>This Ad is closed by user.</p></div>					
+		{% endif %}
+			<div class="item-content">						
+				<div id="" class="wish-cover">
+					{% if feed.wish.wish_image_set.all %}
+					{% for img in feed.wish.wish_image_set.all|slice:":1" %}
+							<a href="/wish/{{ feed.wish.slug }}/">
+							{% thumbnail img.image "280x160" crop="center" as im %}
+								<img class=""  src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+							</a>
+					{% endfor %}
+					{% endif %}				
+				</div>											
+<div class="divider-top col-xs-12" style="background:#F5F5F5;padding-top:2px;padding-bottom:2px">
+<a href="/search/?q=&cat={{ feed.wish.category.name }}" class="text-muted"><small>{{ feed.wish.category.name }}&nbsp;&nbsp;/</small></a>
+<a href="/search/?q=&sub_cat={{ feed.wish.subcategory.name }}" class="text-muted"><small>{{ feed.wish.subcategory.name }}</small></a>
+</div>
+
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}</div>
+				<div class="item-text">
+				<p ><a href="/wish/{{ feed.wish.slug }}/" class="text-dark-gray">{{ feed.wish.wish_text }}</a></p>
+				</div>														
+				<div class="tags">
+					{% for tag in feed.wish.tags.all %}
+						<a class="tag-name" href='/search/?q={{ tag.name }}'> 
+							{{tag.name}}
+						</a>
+					{% endfor %}						
+				</div>
+					<div class="col-xs-12 ">
+						{% if feed.wish.wish_type == "sell" %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}" class="text-muted">{{ feed.user.user_id.get_full_name }}</a> wants to sell
+						</p>
+						{% else %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}" class="text-muted">{{ feed.user.user_id.get_full_name }}</a> wants to buy
+						</p>
+						{% endif %}
+
+					</div>	
+
+				<div id="" class="wish-images link1 col-xs-12">
+					{% if feed.wish.wish_image_set.all %}
+					<ul class="list-inline">
+					{% for img in feed.wish.wish_image_set.all|slice:"1:" %}
+					<li class=""><a href="{{ img.image.url }}">
+							{% thumbnail img.image "49x49" crop="center" as im %}
+								<img class="thumbnail"  src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+						</a>
+						</li>
+					{% endfor %}
+					</ul>													
+					{% endif %}				
+				</div>											
+
+
+				<div class="col-xs-12">
+				
+				{% if feed.wish.location %}
+				<div class="text-muted pull-left"><i class="fa fa-map-marker drk-btn-color pull-left"></i>
+						{{ feed.wish.location.name_std }}
+				</div>
+				{% endif %}
+				<div class="my-color pull-right"><b><p><i class="fa fa-inr"></i>&nbsp;{{ feed.wish.price }}</p></b></div>
+				</div> 
+
+
+			<div class="">
+
+						<div class="divider-top col-xs-12">									
+						<form action="" method="post" class="footer-btn">
+									<div class="rewish-btn">
+										{% if feed.wish.rewish_count > 0 %}
+											{{ feed.wish.rewish_count }}
+										{% endif %}		
+								<div class="fa fa-refresh drk-btn-color" ></div>&nbsp;Share</div>
+								<input  type="hidden"  name="re-wish" />							
+								<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+								<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}" />
+							{% csrf_token %}
+						</form>					
+						<a href="#" >
+								{% if feed.wish.user.user_id.username != request.user.username %}	<div class="msg-btn pull-right" data-username="{{ feed.user.pk }}"  data-fullname="{{ feed.wish.user.user_id.get_full_name }}">&nbsp;<div class="fa fa-envelope drk-btn-color"></div>&nbsp;Message</div>{% endif %}
+						</a>
+
+					  {% if feed.wish.user.user_id.username == request.user.username %}
+					 
+						<form action="" method="post" class="pull-right">
+							<div class="close-wish">
+							<span class="fa fa-remove drk-btn-color"></span>
+							close-ad.
+							<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}"/>							
+							<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+							</div>
+						</form>
+					  {% endif %}
+
+					</div>	
+			</div>				
+						
+		</div>		  		    		
+	</div>		  		    		
+{% elif feed.feed_type == "RW" or feed.feed_type == "RO" or feed.feed_type == "RR"  %}
+		<div class="item-wish item wish" >				
+			<div class="item-content">						
+		{% if feed.wish.status == 'D' %}
+		<div class="disabled-wish"><p class='lead text-center'>This Ad is closed by user.</p></div>					
+		{% endif %}
+
+				<div id="" class="wish-cover">
+					{% if feed.wish.wish_image_set.all %}
+					{% for img in feed.wish.wish_image_set.all|slice:":1" %}
+							<a href="/wish/{{ feed.wish.slug }}/">
+							{% thumbnail img.image "280x160" crop="center" as im %}
+								<img class=""  src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+							</a>
+					{% endfor %}
+					{% endif %}				
+				</div>											
+
+<!---
+				<div class="img-container">
+					{% thumbnail feed.wish.user.avatar "100x100" crop="center" as im %}
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}													
+				</div>
+				<div class="img-inner-container"></div>	
+--->
+<div class="divider-top col-xs-12" style="background:#F5F5F5;padding-top:2px;padding-bottom:2px">
+<a href="/search/?q=&cat={{ feed.wish.category.name }}" class="text-muted"><small>{{ feed.wish.category.name }}&nbsp;&nbsp;/</small></a>
+<a href="/search/?q=&sub_cat={{ feed.wish.subcategory.name }}" class="text-muted"><small>{{ feed.wish.subcategory.name }}</small></a>
+</div>
+
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+
+				<div class="item-text">
+				<p><a href="/wish/{{ feed.wish.slug }}/" class="text-dark-gray">{{ feed.wish.wish_text }}</a></p>
+				</div>
+
+				<div class="tags">
+					{% for tag in feed.wish.tags.all %}
+						<a class="tag-name" href='/search/?q={{ tag.name }}'> 
+							{{tag.name}} 
+						</a>
+					{% endfor %}
+				</div>
+
+
+					<div class="col-xs-12 ">
+						{% if feed.wish.wish_type == "sell" %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}" class="text-muted">{{ feed.user.user_id.get_full_name }}</a> wants to sell
+						</p>
+						{% else %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}" class="text-muted">{{ feed.user.user_id.get_full_name }}</a> wants to buy
+						</p>
+						{% endif %}
+
+					</div>	
+
+				<div id="" class="wish-images link1">
+					{% for img in feed.wish.wish_image_set.all|slice:"1:" %}
+						<a href="{{ img.image.url }}" class="col-xs-6 col-md-3">
+							{% thumbnail img.image "55x55" crop="center" as im %}
+								<img  class="thumbnail" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+						</a>
+					{% endfor %}													
+				</div>						
+
+				<div class="col-xs-12">
+				
+				{% if feed.wish.location %}
+				<div class="text-muted pull-left"><p><i class="fa fa-map-marker drk-btn-color "></i>&nbsp;{{ feed.wish.location.name_std }}</p>
+				</div>
+				{% endif %}
+				<div class="my-color pull-right"><b><p><i class="fa fa-inr"></i>&nbsp;{{ feed.wish.price }}</p></b></div>
+				</div> 
+
+					<div class="divider-top col-xs-12">									
+							<form action="" method="post" class="footer-btn">
+										<div class="rewish-btn">
+											{% if feed.wish.rewish_count > 0 %}
+												{{ feed.wish.rewish_count }}
+											{% endif %}		
+											<div class="fa fa-refresh drk-btn-color pull-left" ></div>&nbsp;Share</div>
+									<input  type="hidden"  name="re-wish" />							
+									<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+									<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}" />
+								{% csrf_token %}
+							</form>					
+							<a href="#" >
+								{% if feed.wish.user.user_id.username != request.user.username %}	<div class="msg-btn pull-right" data-username="{{ feed.user.pk }}"  data-fullname="{{ feed.wish.user.user_id.get_full_name }}">&nbsp;<div class="fa fa-envelope drk-btn-color pull-left"></div>&nbsp;Message</div>{% endif %}
+							</a>
+					  {% if feed.wish.user.user_id.username == request.user.username %}
+										 
+						<form action="" method="post" class="pull-right">
+							<div class="close-wish">
+							<span class="fa fa-remove drk-btn-color"></span>
+							close-Ad
+							<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}"/>							
+							<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+							</div>
+						</form>
+					  {% endif %}
+
+						</div>	
+			
+			</div>									
+		</div>
+{% elif feed.feed_type == "B" %}		
+<div class="item billboard " >				
+	<div class="billboard-one"  data-imageurl="{{ feed.billboard.billboard.url }}" >
+		<a class="big-billboard" href="{{ feed.billboard.billboard.url }}">	
+		{% thumbnail feed.billboard.billboard "340" crop="center" as im %}
+			<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+		{% endthumbnail %}
+		</a>
+	</div>				
+		<div  class="user-action-wrapper">						
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+
+			<div class="talk-img-container">
+				{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+			</div>
+	
+			<div class="item-talk-user">
+				<a href="/business/{{ feed.business.official_tag }}">{{ feed.business.name }}</a>																	
+				<span>added this billboard</span>
+			</div>	
+		</div>			
+		<div class="item-wish-footer col-md-12">									
+		
+		<form action="" method="post">
+			<div class="share-btn">&nbsp;&nbsp;<div class="glyphicon glyphicon-random drk-btn-color" ></div>&nbsp;Share </div>
+<!--					<button class=" " type="submit" name="share" value="Share"></button>-->
+			<input type="hidden" name="share"/>
+			<input type="hidden" name="billboard_id" value="{{ feed.billboard_id }}" />
+			<input type="hidden" name="business_id" value="{{ feed.business_id }}" />
+			<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+		</form>
+	</div>		
+</div>			
+		{% elif feed.feed_type == "SB" %}
+		<div class="item shared_billboard" >				
+			<div class="billboard-one"  data-imageurl="{{ feed.billboard.billboard.url }}" >
+			<a class="big-billboard" href="{{ feed.billboard.billboard.url }}">	
+				{% thumbnail feed.billboard.billboard "340" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+			</a>
+			</div>
+			<div  class="user-action-wrapper">				
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+				<div class="talk-img-container">
+					{% thumbnail feed.billboard.business.logo "70x70" crop="center" as im %}
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+				</div>		
+				<div class="item-talk-user">
+					<a href="/business/{{ feed.billboard.business.official_tag }}">{{ feed.billboard.business.name }}</a>
+				</div>	
+			</div>
+			<div  class="user-action-wrapper">			
+				<!--
+				<div class="item-date-time"><a>{{ feed.added | feed_time }}</a></div>
+				
+				<div class="item-date-time-img"></div>
+					-->
+				<div class="talk-img-container">
+					{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+				</div>
+				<div class="item-talk-user"><a href="/{{ feed.user.user_id.username }}"> {{ feed.user.user_id.get_full_name }} </a>												
+					<span>shared this business</span>
+				</div>	
+			</div>			
+			<div class="item-wish-footer col-md-12">									
+				<form action="" method="post">
+					<div class="share-btn">&nbsp;&nbsp;<div class="glyphicon glyphicon-random drk-btn-color" ></div>&nbsp;Share </div>
+					<input type="hidden" name="share"/>
+					<input type="hidden" name="billboard_id" value="{{ feed.billboard_id }}" />
+					<input type="hidden" name="business_id" value="{{ feed.business_id }}" />
+				    <input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</form>
+	
+
+			</div>
+			
+		</div>
+		{% elif feed.feed_type == "T" %}
+		<div class="item talk">
+			<div class="talk-content">
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+				<a href="/talks/{{ feed.talk.slug }}"><div class="talk-text"><p>{{ feed.talk.title }}</p></div></a> 
+				<div class="tags-talk">{% for tag in feed.talk.tags.all %}
+					<a class="talk-tag-name" href='/search/?q={{ tag.name }}'> {{tag.name}} </a>{% endfor %}
+				</div>
+				<div class="talk-img-container">
+					{% if feed.user.avatar %}
+						{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% else %}
+						{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% endif %}
+				</div>
+				<div class="item-talk-user">
+					<a href="/{{ feed.user.user_id.username }}"> {{ feed.user.user_id.get_full_name }} {{ feed.business.name }}</a>												
+					<span>started this talk</span>
+				</div>
+			</div>					
+		</div>
+		{% elif feed.feed_type == "TC" %}
+		<div class="item talk">		
+			<div class="talk-content">				
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+				<a href="/talks/{{ feed.talk.slug }}"><div class="talk-text"><p>{{ feed.talk.title }}</p></div></a> 
+				<div class="tags-talk">{% for tag in feed.talk.tags.all %}<a class="talk-tag-name" href='/search/?q={{ tag.name }}'> {{tag.name}} </a>{% endfor %}</div>
+				<div class="talk-img-container">
+					{% if feed.user.avatar %}
+						{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% else %}
+						{% thumbnail feed.business.logo "70x70" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% endif %}
+				</div>				
+				<div class="item-talk-user">
+					<a href="/{{ feed.user.user_id.username }}">{{ feed.user.user_id.get_full_name }} {{ feed.business.name }}</a>
+					<span>joined this talk</span>
+				</div>			
+			</div>	
+		</div>
+{% elif feed.feed_type == "R" %}	
+	<div class="item rating">			
+		<div class="rating-content">				
+				<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ feed.added }}"><span class="fa fa-clock-o "></span> {{ feed.added | feed_time }}	</div>
+
+				{% if feed.rating.owned_type == "O"%}
+					<div class="rating_text">
+						<p class="text-center">{{ feed.rating.rating_tag.tag.name }}</p>
+					</div>
+				{% else %}
+					<div class="rating_text">
+						<p class="text-center"><a class="text-dark-gray" href='/search/?q={{ feed.rating.rating_tag.tag.name }}'>{{ feed.rating.rating_tag.tag.name }}</a></p>
+					</div>
+				{% endif %}								
+					<form action="" method="post">			
+						<div class="rating_star">
+							<div class="star" data-score="{{ feed.rating.rating }}" ></div>
+						</div>		
+						<div class="rating_tag">
+							{{ feed.rating.rating_tag.rating|div:feed.rating.rating_tag.count }}
+							<span>by {{ feed.rating.rating_tag.count }} users</span>
+						</div>							
+						<input type="hidden" id="star-rate" name="rate">
+						<input type="hidden" id="star-rating" name="rating_tag_id" value="{{ feed.rating.rating_tag_id }}" />
+						<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				{% csrf_token %}
+					</form>	
+			<div class="talk-img-container">
+					{% thumbnail feed.user.avatar "70x70" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+			</div>
+					
+			<div class="item-talk-user">
+				<a href="/{{ feed.user.user_id.username }}">{{ feed.user.user_id.get_full_name }}</a>
+			</div>
+			{% if feed.rating.owned_type == "O"%}
+				<div class="rating_tag_option">	rated </div>
+				<a class="rating_tag_name" href='/search/?q={{ feed.rating.rating_tag.tag.name }}'>{{ feed.rating.rating_tag.tag.name }}</a>
+			{% else %}
+				<div class="rating_tag_option">	owns </div>
+				<a  class="rating_tag_name" href='/search/?q={{ feed.rating.rating_tag.tag.name }}'>{{ feed.rating.rating_tag.tag.name }}</a>				
+			{% endif %}
+		</div>
+	</div>
+
+{% endif %}

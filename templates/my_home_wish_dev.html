@@ -1,0 +1,61 @@
+		<div class="item wish" >				
+			<div class="item-content">						
+				<div class="img-container ">
+					{% thumbnail feed.user.avatar "120x120" crop="center" as im %}
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}	
+				</div>					
+				<div class="img-inner-container"></div>	
+				<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ feed.added | feed_time }}</div>
+				<div class="item-text">
+					<blockquote><p>{{ feed.wish.wish_text }}</p></blockquote>
+				</div>														
+
+					<div class="tags">
+						{% for tag in feed.wish.tags.all %}
+							<a class="tag-name"> 
+								{{tag.name}}
+							</a>
+						{% endfor %}						
+					</div>												
+						
+					
+					<div class="item-top-content">
+					<div class="item-user">
+						<a href="{% url 'profile_detail' username=feed.user.user_id.username %}">
+							{{ feed.user.user_id.get_full_name }} 
+						</a>
+					</div>	
+				{% if feed.user.location != None %}
+				<div class="item-user-city"><div class="glyphicon glyphicon-map-marker drk-btn-color"></div>
+						{{ feed.user.location }}
+				</div>
+				{% endif %}
+				</div>		
+						
+			<div class="item-wish-footer">									
+				<form action="" method="post" class="footer-btn">
+					{% if feed.wish_id in rewish_obj %}					
+							<div class="rewish-btn">&nbsp;&nbsp;<div class="glyphicon glyphicon-refresh drk-btn-color" ></div>&nbsp;Rewish</div>
+						<input  type="hidden"  name="re-wish" />							
+					    <input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+						<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}" />
+						
+						{% else %}
+							<div class="rewish-btn">&nbsp;&nbsp;<div class="glyphicon glyphicon-refresh drk-btn-color" ></div>&nbsp;Rewish</div>
+							<!--<div class="wish-botton">
+								<a class="re-wish-text"  href="/messages/{{ feed.user.user_id.username }}" >re-wish</a>
+							</div>-->					
+						<input  type="hidden"  name="re-wish" />							
+					    <input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+						<input  type="hidden"  name="wish_id" value="{{ feed.wish_id }}" />
+					{% endif %}
+					{% csrf_token %}
+				</form>					
+					<a href="/messages/{{ feed.user.user_id.username }}" >
+					 <div class=" msg-btn ">&nbsp;<div class="glyphicon glyphicon-envelope drk-btn-color"></div>&nbsp;Message</div>
+					</a>
+			</div>
+			
+			</div>		  		    		
+		</div>		  		    		

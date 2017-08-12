@@ -1,0 +1,264 @@
+<div class="row">
+<form class="form-horizontal " id="filter-search" role="form" action="/search/" method="get" autocomplete="off">				
+{% if not user.is_authenticated and request.get_full_path != "/" %}
+<div class="row">
+<div class="col-xs-12">
+<div class="input-group text-dark-black">
+	<span class="input-group-addon"> 	
+		<div class="hidden-xs hidden-sm">	
+		<i class="glyphicon glyphicon-map-marker text-muted"></i>
+			<input type="text" class="location " placeholder="Nearest City" name="location" value="" data-value="{{ request.GET.location }}" style="border:none;width:100px;font-size:14px" autofocus>
+		</div>
+	</span> 
+
+	<input type="text" class="form-control " placeholder="Search here" id="main-search" name="q" value="{{ request.GET.q }}" >
+
+	<span class="input-group-btn close-filter">
+		<i class="fa fa-angle-down fa-fw text-dark-gray" style="font-size: 22px"></i>
+	</span>
+
+
+</div>
+
+</div>
+</div>
+
+{% endif %}
+
+{% if not user.is_authenticated and request.get_full_path == "/" %}
+<div class="row">
+<div class="col-xs-12  col-md-8 col-md-offset-2">
+<div class="hidden-xs hidden-sm">
+<div class="input-group text-dark-black">
+	<span class="input-group-addon ">
+		<i class="glyphicon glyphicon-map-marker text-muted"></i>
+			<input type="text" class="location " placeholder="Nearest City" name="location" value="" data-value="{{ request.GET.location }}" style="border:none;width:100px;font-size:14px" autofocus>
+	</span> 
+	<input type="text" class="form-control open-filter" placeholder="Search here" id="main-search" name="q" value="{{ request.GET.q }}" >
+	<span class="input-group-btn">
+		<button class="btn btn-danger btn-lg "><i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;Search</button>
+	</span>
+
+	</div>
+</div>
+
+</div>
+</div>
+
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="">
+<div class="">
+<div class="input-group text-dark-black">
+	<span class="input-group-addon" >
+	<div class="hidden-xs hidden-sm" >	
+		<i class="glyphicon glyphicon-map-marker text-muted"></i>
+			<input type="text" class="location" placeholder="Nearest City" name="location" value="" data-value="{{ request.GET.location }}" style="border:none;width:100px;">
+	</div>
+
+	</span> 	
+	<input type="text" class="" placeholder="Search here" id="main-search" name="q" value="{{ request.GET.q }}" >
+
+	<span class="input-group-btn close-filter">
+		<div class="hidden-md hidden-lg">
+		<i class="fa fa-angle-down fa-fw text-dark-gray" style="font-size: 22px"></i>
+		</div>
+	</span>
+
+</div>
+</div>
+</div>
+
+{% endif %}
+
+
+<div class="col-lg-9 col-md-10 col-sm-12 col-xs-12 col-md-offset-1 search-filters-main">
+	<div class="row">
+	<div class="col-xs-12 hidden-md hidden-lg">
+		<br>
+		<div class="form-group">		
+			<div class="col-xs-12">
+				<input type="text" class="location form-control" placeholder="Nearest City" name="location" value="" data-value="{{ request.GET.location }}">
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-2 col-xs-12 search-filter">
+		<select class="form-control search-filter-category" name="cat" data-option="{{ request.GET.cat }}" >
+		<option value="" selected >Category</option>
+			{% for cat in cat_obj %}
+				<option value="{{ cat.name }}" data-rel="{{ cat.name }}">{{ cat.name }}</option>
+			{% endfor %}										
+		</select>
+	</div>
+
+	<div class="col-md-2 col-xs-12 search-filter">
+		
+			<select class="form-control search-filter-subcategory" name="sub_cat" data-option="{{ request.GET.sub_cat }}">
+			<option value="" >Sub-Category</option>
+			{% for cat in cat_obj %}
+				{% for sub in cat.subcategory_set.all %}
+					<option value="{{ sub.name }}" class="category_{{ cat.name }} search-filter-subcat-option" class="id_{{ cat.name }}" data-category="id_{{ cat.name }}">{{ sub.name }}</option>
+				{% endfor %}
+			{% endfor %}
+		</select>
+	</div>
+
+	<div class="col-md-4 col-xs-12 search-filter">
+		<div class="row">
+		<div class="col-md-6 col-xs-6"><input class="form-control " id="min-price" placeholder="Min Price" name="min_price" value="" data-value="{{ request.GET.min_price }}" style="" type="number" min="1" step="1"></div>
+		<div class="col-md-6 col-xs-6"><input class="form-control " id="max-price" placeholder="Max Price" name="max_price" value="" data-value="{{ request.GET.max_price }}" style="" type="number" min="1" step="1"></div>
+		</div>
+	</div>
+
+	<div class="col-xs-12 hidden-md hidden-lg">		
+	<div class="form-group">		
+
+	<div class="col-xs-12">
+		<button class="btn btn-danger btn-block" type="submit" value="Search">Search</button>
+	</div>
+	</div>
+	<div class="form-group">		
+	
+	<div class="col-xs-6">
+		<a class="btn btn-default btn-block close-filter" >Close Filter</a>
+	</div>
+
+	<div class="col-xs-6">
+			<button type="reset" value="Reset" class="btn btn-default btn-block" style="">Clear all</button>
+	</div>
+
+	</div>
+
+	</div>
+
+{% if not user.is_authenticated and request.get_full_path != "/" %}
+<div class="col-md-2 hidden-xs hidden-sm">
+		<button type="reset" value="Reset" class="btn btn-default btn-block" style="margin-top:10px;">Clear all</button>
+</div>
+
+<div class="col-md-2 hidden-xs hidden-sm">
+		<button type="submit" class="btn btn-danger btn-block" style="margin-top:10px;">Search</button>
+</div>
+{% endif %}
+{% if user.is_authenticated  %}
+
+<div class="col-md-2 hidden-xs hidden-sm">
+		<button type="reset" value="Reset" class="btn btn-default btn-block" style="margin-top:10px;">Clear all</button>
+</div>
+
+<div class="col-md-2 hidden-xs hidden-sm">
+		<button type="submit" class="btn btn-danger btn-block" style="margin-top:10px;">Search</button>
+</div>
+{% endif %}
+
+	</div>
+</div>
+
+</form>
+
+</div>
+
+
+<script>
+$('#main-search').on('click',function(){
+	if (	$('.search-filters-main').css('display') == 'none'){
+	$('.overlay-back2').fadeIn();}
+	else 
+	{
+	$('.overlay-back2').fadeOut();		
+		}
+	$('.search-filters-main').slideToggle();
+
+	});
+</script>
+
+
+<script>
+$(document).mouseup(function (e)
+{
+    var container = $("#main-search");
+    var container2 = $(".search-filters-main");
+    
+    if (!container.is(e.target) // if the target of the click isn't the container...
+        && container.has(e.target).length === 0 && !container2.is(e.target) && container2.has(e.target).length === 0 ) // ... nor a descendant of the container
+    {
+        $('.search-filters-main').slideUp();
+		$('.overlay-back2').fadeOut();		
+
+    }
+});
+</script>
+
+<script>
+$('.close-filter').on('click',function(){
+	if (	$('.search-filters-main').css('display') == 'none'){
+	$('.overlay-back2').fadeIn();
+		$('.search-filters-main').slideDown();
+
+	}
+
+	else 
+	{
+	$('.overlay-back2').fadeOut();		
+	$('.search-filters-main').slideUp();
+
+		}
+
+	});
+</script>
+
+<script>
+$( "input.location" ).autocomplete({
+	source: "{% url 'autocomplete_city' %}",
+	minLength: 2,
+		select: function(event, ui) {
+        event.preventDefault();
+        $(".location").val(ui.item.city);
+   },
+    focus: function(event, ui) {
+		        event.preventDefault();
+        $(".location").val(ui.item.city);
+    },
+    change: function(event,ui){
+  $(this).val((ui.item ? ui.item.city : ""));
+}
+});
+</script>
+
+<script>
+    var $cat = $('select[name=cat]');
+	var category=$('.search-filter-subcat-option').data('category');	
+	$('.search-filter-subcat-option').hide();
+		$cat.change(function(){
+	$('.search-filter-subcategory').val('');
+	$('.search-filter-subcat-option').hide();
+		var selected = '.category_'+$('.search-filter-category').val();	
+		$(selected).show();
+        });
+</script>
+<script>
+var option_value=$('.search-filter-category').data('option');	
+$('.search-filter-category').val(option_value);
+</script>
+
+<script>
+var option_value=$('.location').data('value');	
+$('.location').val(option_value);
+</script>
+<script>
+var option_value=$('#min-price').data('value');	
+$('#min-price').val(option_value);
+</script>
+<script>
+var option_value=$('#max-price').data('value');	
+$('#max-price').val(option_value);
+</script>
+
+<script>
+var option_value=$('.search-filter-subcategory').data('option');	
+		var selected = '.category_'+$('.search-filter-category').data('option');	
+		$(selected).show();
+		$('.search-filter-subcategory').val(option_value);
+</script>

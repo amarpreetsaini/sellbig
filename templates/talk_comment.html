@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}
+{% load widget_tweaks %}
+
+{% block head %} 
+<META NAME="description" CONTENT="{{ talk_obj.description }}" />
+<link rel="image_src" href="{{ STATIC_URL }}img/left-talk.png" />
+{% endblock %}	
+
+{% block content%}
+<div  class="feed">	
+	<div class="talk-comment col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+			<div class="col-md-12 col-sm-12 col-xs-12"><h2 class="danger-color text-center">{{ talk_obj.title }}</h2></div>		
+			<div class="profile-tags-talk talk-comment-tags">
+				{% for tag in talk_obj.tags.all %}<a class="tag-name"> {{ tag.name }}</a>{% endfor %}
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12"><p>{{ talk_obj.description }}</p></div>
+
+			<p class="col-md-12">
+			<span class="pull-left mg-r">
+				{% thumbnail talk_obj.user.avatar "30x30" crop="center" as im %}
+					<img class="img-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+			</span>			
+			
+			<small class="pull-right text-muted">{{ talk_obj.added  | feed_time}}</small>		
+
+			<small class=""><a href="/{{ talk_obj.user.user_id.username }}{{ talk_obj.business.offical_tag}}"><b> {{ talk_obj.user.user_id.get_full_name }} {{ talk_obj.business.name}}</b></a>												
+			<span>started this talk</span>
+			</small>
+			</p>
+	</div>
+		
+<div class="talk-feed col-md-8 col-md-offset-2 col-sm-12 col-xs-12">	
+	<div class="row">	
+		<br>	
+		<div class="talk-comment-wrapper col-md-12 col-sm-12 col-xs-12" id="talk-comment-form-id">				
+		<br>	
+			<p class="col-md-12">
+				<span class="pull-left mg-r">
+						{% thumbnail user.user_info.avatar "30x30" crop="center" as im %}
+							<img class="img-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+				</span>
+				<small class="">
+					<a href="/{{ user.username }}{{ user.business.official_tag }}"><b>{{ user.get_full_name }} {{ user.business.name}}</b></a>												
+				</small>					
+				<small class="text-muted">{{ comment.added  | feed_time}}</small>
+			</p>			
+			<div class="row">
+				<form action="" method="post" class=" col-md-11 col-sm-12 col-xs-12 pull-right" >
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+							{% render_field form.comment id="talk-comment-form" class="form-control" placeholder="Add comment" maxlength="500" %}
+						</div>
+						
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<button class="btn btn-danger btn-xs post-comment pull-right" type="button">Comment</button>
+					</div>
+					</div>
+					<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</form>
+			</div>
+	
+		</div>		
+		{% include 'talk_comment_feed.html' %}	
+
+	</div>	
+		<br>
+		<br>
+		<br>
+		<br>
+
+</div>
+	
+</div>
+{% block js %}
+{{ block.super }}
+	
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>    
+<script>		
+$('.talk-feed').endlessPaginate({
+	paginateOnScroll: true,
+	paginateOnScrollMargin: 100
+});
+</script>
+
+
+<script>
+$('.talk-comment-wrapper').hover(
+	function(){$(this).find('.delete-icon').show();},
+	function(){$(this).find('.delete-icon').hide();}
+);
+</script>
+<script>
+	$('.feed').on('click','.post-reply2',function() { // catch the form's submit event
+		var coin = $(this).closest("form").find('[name|="csrfmiddlewaretoken"]').val();
+		var comment = $(this).closest("form").find('#talk-reply-form').val();
+		var parentId = $(this).closest("form").find('[name|="parent_id"]').val();
+    if(comment){
+            $.ajax({ // create an AJAX call...
+				type: "POST",          
+				url: '',			
+				data:{'comment':comment,'parent_id':parentId,'child':'', 'csrfmiddlewaretoken':coin},
+                context: this,
+				success: function(response) {            
+				$(this).closest("form").parent().parent().after(response);
+				$(this).closest("form").find("input[type=text], textarea").val("");
+            	}
+            	,
+            	statusCode: {
+				404: function() {
+				  alert('This comment might have been deleted. Please refresh the page.');
+				}}
+
+            });
+         }
+		return false; //IE
+
+        });       
+</script>	
+
+<script>		
+$('.feed').on('submit','.talk-comment-delete-form',function(event) { // catch the form's submit event
+	event.preventDefault();
+	var $form=$(this);
+	var data = $form.serialize();
+		$.ajax({ // create an AJAX call...
+		data: data, // get the form data
+		type: $(this).attr('method'), // GET or POST
+		url: $(this).attr('action'), // the file to call
+		context: this,
+		success: function(response) { // on success..
+		$(this).parent().parent().remove();
+		}
+	});
+    return false;        
+});       	
+</script>
+<script>
+        $('.feed').on('submit','.talk-comment-up-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	},
+       			statusCode: {
+				404: function() {
+				alert('This comments seems to be deleted by user. Please refresh the page.');
+				}}
+            });
+            return false;        
+        });       
+</script>
+<script>
+        $('.feed').on('submit','.talk-comment-down-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	},
+       			statusCode: {
+				404: function() {
+				  alert('This comment seems to be deleted by user. Please refresh the page.');
+				}}
+            });
+            return false;        
+        });       
+</script>
+
+
+<script>
+        $('.feed').on('submit','.talk-comment-reply-up-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	},
+				statusCode: {
+				404: function() {
+				alert('This comment seems to be deleted by user. Please refresh the page.');
+				}}
+            });
+            return false;        
+        });       
+</script>
+
+<script>
+        $('.feed').on('submit','.talk-comment-reply-down-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+ 	    var $form=$(this);
+	    var data= $form.serialize();
+            $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+                $(this).parent().find('.vote-count').html(response);          	
+            	},
+       			statusCode: {
+				404: function() {
+				alert('This comment seems to be deleted by user. Please refresh the page.');
+				}}
+            });
+            return false;        
+        });       
+</script>
+
+
+<script>
+	$('.feed').on("click",'.post-comment',function() { // catch the form's submit event
+		var coin = $(this).closest("form").find('[name|="csrfmiddlewaretoken"]').val();
+		var comment = $(this).closest("form").find('#talk-comment-form').val();
+    if(comment){
+            $.ajax({ // create an AJAX call...
+				type: 'POST',          
+				url: '',			
+				data:{'comment':comment,'parent':'', 'csrfmiddlewaretoken':coin},
+                context: this,
+				success: function(response) { // on success..            
+				$('#talk-comment-form-id').after(response);
+				$('#talk-reply-form').val('');
+				$(this).closest("form").find("input[type=text], textarea").val("");
+            	}
+            });
+		}
+		return false; //IE
+        });       
+</script>	
+	
+<script>
+	$('.feed').on('click','.post-reply1',function() { // catch the form's submit event
+		var coin = $(this).closest("form").find('[name|="csrfmiddlewaretoken"]').val();
+		var comment = $(this).closest("form").find('#talk-reply-form').val();
+		var parentId = $(this).closest("form").find('[name|="parent_id"]').val();
+    if(comment){
+            $.ajax({ // create an AJAX call...
+				type: "POST",          
+				url: '',			
+				data:{'comment':comment,'parent_id':parentId,'child':'', 'csrfmiddlewaretoken':coin},
+                context: this,
+				success: function(response) { // on success..            
+				$(this).closest("form").parent().parent().after(response);
+				$(this).closest("form").find("input[type=text], textarea").val("");
+            	}
+            	,
+            	statusCode: {
+				404: function() {
+				  alert('This comment might have been deleted. Please refresh the page.');
+				}}
+        });
+		}
+		return false; //IE
+	});       
+</script>	
+
+<script>		
+	 $('.feed').on('submit','.talk-comment-reply-delete-form',function(event) { // catch the form's submit event
+   		event.preventDefault();
+	    var $form=$(this);
+	    var data = $form.serialize();
+                $.ajax({ // create an AJAX call...
+                data: data, // get the form data
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                context: this,
+                success: function(response) { // on success..
+		   		$(this).parent().remove();
+            	}
+            });
+            return false;        
+        });       	
+</script>
+
+<script>
+	$('.feed').on('hover','.talk-comment-wrapper',
+	function(){$(this).find('.delete-icon').show();},
+	function(){$(this).find('.delete-icon').hide();}
+	 );
+</script>
+
+
+{% endblock %}
+{% endblock %}

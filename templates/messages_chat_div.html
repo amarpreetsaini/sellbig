@@ -1,0 +1,33 @@
+{% load calculations %}
+{% load thumbnail %}
+
+
+		<div class="message-threads">
+		 {% if message_obj.from_user.user_id == user %} 
+	
+	<li class="media">
+		 <div class="media-left">	
+		<div class="talk-img-container">		
+				{% thumbnail message_obj.from_user.avatar "80x80" crop="center" as im %}
+						<img class="media-object" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}							
+		</div>				
+		</div>				
+		<div class="media-body">
+			<div>{{ message_obj.text }}</div>
+			<small class="media-heading text-muted">{{ message_obj.from_user.user_id.get_full_name }} <span class="pull-right"> {{ message_obj.added | feed_time }}</span></small>
+		</div>
+	</li>
+
+		 {% endif %}
+		 </div>
+		
+		<!--
+			<form action="" method="post">
+				<input type="submit" name="delete_msg" title="Delete message" value="" class="delete-icon">
+				<input type="hidden" name="message_id" value="{{ message_obj.id }}" />
+				<input type="hidden" name="thread_id" value="{{ message_obj.thread_id }}" />
+				{% csrf_token %}
+			</form>
+	
+-->

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}
+{% block content%}
+<br><br><br>
+<div class="feed ">	
+
+	<div class="contacts static" >
+		<div class="img-profile-container">		
+			{% thumbnail profile_info.avatar "200x200" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+		</div>	
+		<div class="img-inner-profile-container"></div>			
+		<div class="col-xs-12">
+		<form action="" method="post" >
+			{% if is_friend == "Y" %}
+			<div class="added-friend-btn">	
+			<div class="btn-group pull-right">
+				  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+					<span class=" glyphicon glyphicon-th-list text-muted"></span>
+				  </button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+					<li class="msg-btn"  data-username="{{ profile_info.user_id.username }}" data-fullname="{{ profile_info.user_id.get_full_name }}" ><a data-target="#" ><div class="glyphicon glyphicon-send"></div>&nbsp;&nbsp;Send Message</a></li>
+					<li class="remove-friend-btn" data-username="{{ profile_info.user_id.username }}"><a href="#"><div class="glyphicon glyphicon-minus"></div>&nbsp;&nbsp;Remove Friend</a></li>
+				  </ul>
+				</div>
+			</div>								
+			{% elif is_friend == "N" %}	
+			<div class="add-friend-btn btn btn-default btn-sm pull-right" data-username="{{ profile_info.user_id.username }}">
+			<i class=" glyphicon glyphicon-plus text-muted"></i>&nbsp;Add</div>			
+			{% elif is_friend == "S" %}
+			<br>
+			<div class="btn btn-default btn-sm pull-right">Friend request sent</div>
+			{% endif %}
+		    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+		</form>
+		</div>
+
+		<div class="col-xs-12" >
+			<h4 class="text-center text-dark-gray">
+				<p>{{ profile_info.user_id.get_full_name }}</p>												
+			</h4>
+		
+			<h5 class="text-center text-dark-gray">	
+				{% if profile_info.location %}<p  data-placement="right" class="tooltip-marker" title="{{ user_info.location.name_std }}"><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{ profile_info.location.name_std|set_length:25 }}</p>{% endif %}
+
+<!--				{% if profile_info.contact %}<p data-placement="right" class="tooltip-marker" title="{{ user_info.contact }}"><i class="glyphicon glyphicon-phone"></i>&nbsp;&nbsp;{{ profile_info.contact }}</p>{% endif %}
+-->
+			</h5>		
+
+		</div>		
+		<div class="col-xs-12">
+	<br>
+	<div class="divider-top row"></div>
+	</div>
+		<div class="col-xs-12">	
+			<div class="text-center text-muted"><b>Friends</b></div>
+
+			{% for friend in myfriends %}
+						<div class="friendslist tooltip-marker" data-placement="bottom" title="{{ friend.user_id.get_full_name }}">
+						{% thumbnail friend.avatar "120x120" crop="center" as im %}
+							<a href="/{{ friend.user_id.username }}">
+								<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							</a>
+						{% endthumbnail %}	
+					</div>		
+				{% endfor %}
+	</div>		
+	</div>	
+	
+
+	<div class="user-feed-items">
+		{% include 'profile_details_feed.html' %}
+	</div>
+	
+</div>
+
+<div class="overlay-back2"></div>
+<div class="friendrequest-sent-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Friend Request Sent Successfully </div></div>
+<div class="remove-friend-btn-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Friend is Removed </div></div>
+<div class="Closewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Ad Closed Successfully </div></div>
+
+<div class="rewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Rewished Successfully </div></div>
+<div class="rating-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Rating done Successfully </div></div>
+<div class="share-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Billboard Shared Successfully </div></div>
+
+<div id="msg-modal" class="modal fade">
+{% include 'new_message.html' %}
+</div><!-- /.modal -->
+
+{% block js %}
+{{ block.super }}
+
+<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+<script>$('.user-activity').endlessPaginate();</script>
+<script>		
+	$('.user-feed-items').endlessPaginate({
+		paginateOnScroll: true,
+		paginateOnScrollMargin: 100
+	});
+</script>
+
+{% include 'common_js.html' %}
+
+
+<script>
+	$('.add-friend-btn').click(function() { // catch the form's submit event
+		var username=$(this).data('username');
+	    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '/friends/invite/'+username+'/',
+		data:{'to_user':username,'csrfmiddlewaretoken':coin},
+		success: function(data){
+		location.reload();
+		}
+		});  		
+	});
+</script>
+
+<script>
+	$('.remove-friend-btn').click(function() { // catch the form's submit event
+		var username=$(this).data('username');
+	    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',
+		url: '/friends/remove/'+username+'/',
+		data:{'to_user':username,'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		location.reload();
+		}         
+		});  		
+	});
+</script>
+
+<script>
+$('.dropdown-toggle').dropdown()
+</script>
+
+{% endblock %}
+{% endblock %}

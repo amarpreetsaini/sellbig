@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}   
+
+{% block content%}
+
+<div class="feed">		
+	<div class="billboard-current static">	
+		{% for bb in billboard  %}
+			{% if forloop.counter < 2 %}
+				<div class="billboard_image ">
+				{% thumbnail bb.billboard "420" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+				</div>
+			{% endif %}
+			
+		{% endfor %}
+
+			<div class="office-thumbnail-visible">
+				<div class="office-thumbnail">			
+					{% thumbnail business.logo "50x50" crop="center" as im %}
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+					<div class="business-name-title"><p>{{ business.name }}</p></div>
+				</div>
+			</div>
+
+		{% if not added %}
+		<div class="business-profile-btn">
+			
+			<form action="" method="post">
+				<button class="btn btn-default add-business">
+				<span class="glyphicon glyphicon-plus"></span>Add</button>				
+				<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				<input type="hidden" name="add" />			
+			</form>
+		</div>	
+		{% else %}
+		
+			<div class="business-profile-btn">	
+			<div class="btn-group pull-right">
+					<form action="" method="post">
+						<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+						<button class="btn btn-default btn-sm remove-business"><div class="glyphicon glyphicon-minus"></div>&nbsp;&nbsp;Remove Business</button>
+				<input type="hidden" name="delete" />
+					</form>
+				</div>
+			</div>								
+
+		{% endif %}		
+
+	</div>	
+
+<div class="contacts contacts-office static"> 
+	<div class="about-bus">				
+	<div class="col-md-12 col-sm-12 col-xs-12"><h5 class="danger-color">About us
+		<a href ="">
+		</a></h5>
+	</div>
+
+	<ul class="profile-address">
+		{% if business.name %}
+			<li>
+				<div class="glyphicon glyphicon-user pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Name </b>
+				<p data-placement="right" class="tooltip-marker" title="{{ business.name }}">&nbsp;&nbsp;{{ business.name|set_length:25 }}</p>
+			</li>
+		{% endif %}
+		{% if business.location %}
+			<li title="{{ user_info.location }}">
+				<div class="glyphicon glyphicon-map-marker pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Location </b>
+				<p data-placement="right" class="tooltip-marker" title="{{ business.location }}">&nbsp;&nbsp;{{ business.location|set_length:25 }}</p>
+			</li>
+		{% endif %}
+		{% if business.description %}
+			<li title="{{ user_info.location }}">
+				<div class="glyphicon glyphicon-comment pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Description </b>
+				<p data-placement="bottom" class="tooltip-marker" title="{{ business.description }}">&nbsp;&nbsp;{{ business.description|set_length:200 }}</p>
+			</li>
+		{% endif %}
+	</ul>
+	</div>
+
+	<div class="col-md-12 col-sm-12 col-xs-12"><h5 class="danger-color">Contact details</h5>
+	</div>
+	
+	<ul class="profile-address">
+		{% if business.email %}
+			<li>
+				<div class="glyphicon glyphicon-envelope pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Email </b>
+				<p data-placement="right" class="tooltip-marker" title="{{ business.email }}">&nbsp;&nbsp;{{ business.email|set_length:25 }}</p>
+			</li>
+		{% endif %}
+		{% if business.contact %}
+			<li>
+				<div class="glyphicon glyphicon-phone pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Contact </b>
+				<p>&nbsp;&nbsp;{{ business.contact }}</p>
+			</li>
+		{% endif %}
+		{% if business.website %}
+			<li>
+				<div class="glyphicon glyphicon-user pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Website </b>
+				<p data-placement="right" class="tooltip-marker" title="{{ business.website }}">&nbsp;&nbsp;{{ business.website|set_length:25 }}</p>
+			</li>
+		{% endif %}
+		{% if business.start_date %}
+			<li>
+				<div class="glyphicon glyphicon-calendar pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Start date</b>
+				<p data-placement="right" class="tooltip-marker"  title="{{ business.start_date }}">&nbsp;&nbsp;{{ business.start_date}}</p>
+			</li>
+		{% endif %}
+		{% if business.member_count %}
+			<li>
+				<div class="glyphicon glyphicon-book pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Member count</b>
+				<p data-placement="right" class="tooltip-marker" title="{{ business.member_count }}">&nbsp;&nbsp;{{ business.member_count|set_length:25 }}</p>
+			</li>
+		{% endif %}
+		
+			<li>
+				<div class="glyphicon glyphicon-tag pull-left"></div>
+				<b class="text-muted pull-left">&nbsp;&nbsp;Official tag&nbsp;&nbsp;</b>
+				<p >&nbsp;&nbsp;<a class="tag-name">{{ business.official_tag }}</a></p>
+			</li>
+	</ul>
+
+
+</div>
+	
+<div class="contacts static"> 
+	<div class="about-bus">				
+	<div class="col-md-12 col-sm-12 col-xs-12"><h5 class="danger-color">Related tags</h5></div>
+	<div class="profile-tags-talk contact-tags">
+		{% for tag in business.tags.all %}
+		{% if tag.name == business.official_tag %}
+		{% else %}
+			<a class="tag-name" href='/search/?q={{ tag.name }}'>{{ tag.name }}</a>
+		{% endif %}
+		{% endfor %}
+	</div>					
+</div>
+	
+	<div class="col-md-12 col-sm-12 col-xs-12"><h5 class="danger-color">People</h5>
+	</div>
+		
+		{% for biz_users in biz_user_obj %}
+		<div class="friendslist tooltip-marker" data-placement="bottom" title="{{ biz_users.user.user_id.get_full_name }}"> 
+			{% thumbnail biz_users.user.avatar "120x120" crop="center" as im %}
+			<a href="/{{ biz_users.user.user_id.username }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+			{% endthumbnail %}	
+			<!--	<p><a href="/{{ friend.user_id.username }}">{{ friend.user_id.username }}</a></p>-->
+		</div>		
+		{% endfor %}
+			{% if biz_user_obj.count > 8 %}
+				<div class="morecontacts"></div>
+			{% endif %}
+
+</div>		
+		
+
+
+
+	<div class="office_feed">
+		{% include "my_office_feed.html" %}
+	</div>		
+
+</div>
+<div class="overlay-back2"></div>
+<div class="share-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Billboard Shared Successfully </div></div>
+
+{% block js %}
+	{{ block.super }}
+	
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+<script>		
+        $('.office_feed').endlessPaginate({
+            paginateOnScroll: true,
+            paginateOnScrollMargin: 20
+        }); 
+</script>
+{% endblock %}
+	
+		<script type="text/javascript" src="/static/js/masonry.js"></script>
+
+<script>
+		$(function() {
+	    $('.item').show();		
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, {
+		columnWidth:340,
+		gutter: 40, 
+		itemSelector: '.item',
+		stamp: ".static",
+		isFitWidth: true,
+		isAnimated: true,
+		});		
+		});
+		
+				
+</script>
+	<script>
+	$('.business-profile-btn').show();
+</script>
+<script>
+	$('.share-btn').unbind("click");       	
+	$('.share-btn').bind("click",function() { // catch the form's submit event
+    var billboardid = $(this).closest("form").find('input[name|="billboard_id"]').val();
+    var businessid = $(this).closest("form").find('input[name|="business_id"]').val();
+    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'billboard_id':billboardid,'share':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".share-alert").show().delay(1500).fadeOut();				
+		}
+		         
+		});  		
+	});
+</script>
+
+{% endblock %}

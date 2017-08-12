@@ -1,0 +1,24 @@
+{% load widget_tweaks %}
+{% block title %}Edit Image{% endblock %}
+{% block content%}
+	<p><b>Add your profile picture</b></p>
+	{% if form.errors %}
+		<p style="color: red;">Please correct the error{{ form.errors|pluralize }} below.</p>
+		{% endif %}
+		<form action="" method="post" enctype="multipart/form-data" id="image-upload">
+		{% render_field form.avatar type="file" id="file" %}	
+		<input type="submit" value="Upload Image">		
+		{% csrf_token %}
+	</form>
+	<a href=""></a>
+
+<script type="text/javascript" src="/static/js/jquery-1.9.1.js"></script>
+<script>		
+$(function(){
+    $('#btn-upload').click(function(e){
+        e.preventDefault();
+        $('#file').click();}
+    );
+});             	
+</script>
+{% endblock %}

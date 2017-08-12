@@ -1,0 +1,163 @@
+{% load endless %}
+{% load thumbnail %}
+{% load calculations %}   
+{% load highlight %}
+
+{% paginate results %}    	
+{% for result in results %}
+	{% if result.content_type == "feed.wish" %}					
+
+		<div class="item wish" >				
+			<div class="item-content">						
+
+				<div id="" class="wish-cover">
+				{% if result.object.wish_image_set.all %}
+					{% for img in result.object.wish_image_set.all|slice:":1" %}
+							<a href="/wish/{{ result.object.slug }}/" >
+							{% thumbnail img.image "280x160" crop="center" as im %}
+								<img class=""  src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+							{% endthumbnail %}
+							</a>
+					{% endfor %}
+				{% endif %}				
+				</div>											
+
+<div class="divider-top col-xs-12" style="background:#F5F5F5;padding-top:2px;padding-bottom:2px">
+<a href="/search/?q=&cat={{ result.object.category.name }}" class="text-muted"><small>{{ result.object.category.name }}&nbsp;&nbsp;/</small></a>
+<a href="/search/?q=&sub_cat={{ result.object.subcategory.name }}" class="text-muted"><small>{{ result.object.subcategory.name }}</small></a>
+</div>
+								
+						<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ result.object.added | feed_time }}</div>
+						<div class="item-text">
+							<p><a href="/wish/{{ result.object.slug }}/" class="text-dark-gray">
+								{% if request.GET.q %}
+									{% highlight result.object.wish_text with  request.GET.q html_tag "span" css_class "search-highlight" max_length 500 %}
+								{% else %}
+									{{ result.object.wish_text }}
+								{% endif %}
+							</a></p>
+						</div>														
+						<div class="tags">
+							{% for tag in result.object.tags.all %}
+								<a class="tag-name" href='/search/?q={{ tag.name }}'> 
+									{% if request.GET.q %}
+										{% highlight tag.name with  request.GET.q html_tag "span" css_class "search-highlight" max_length 500 %}
+									{% else %}
+										{{ tag.name }}
+									{% endif %}
+								</a>
+							{% endfor %}						
+						</div>										
+				<div class="col-md-12">
+
+				<p class="text-light-gray">
+
+						{% if result.object.wish_type == "sell" %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=result.object.user.user_id.username %}" class="text-muted">{{ result.object.user.user_id.get_full_name }}</a> wants to sell
+						</p>
+						{% else %}
+						<p class="text-muted">
+						<a href="{% url 'profile_detail' username=result.object.user.user_id.username %}" class="text-muted">{{ result.object.user.user_id.get_full_name }}</a> wants to buy
+						</p>
+						{% endif %}
+
+								</p>
+							
+				<div id="links" class="link1 wish-imgages">
+							{% if result.object.wish_image_set.all %}
+								<ul class="list-inline">
+							{% for img in result.object.wish_image_set.all %}
+									<li class=""><a href="{{ img.image.url }}">
+											{% thumbnail img.image "49x49" crop="center" as im %}
+												<img class="thumbnail"  src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+											{% endthumbnail %}
+										</a>
+										</li>
+									{% endfor %}
+									</ul>													
+									{% endif %}				
+								</div>						
+								
+
+				</div>		
+
+				<div class="col-md-12 col-xs-12">
+				
+				{% if result.object.location %}
+				<div class="text-light-gray pull-left"><i class="fa fa-map-marker drk-btn-color pull-left"></i>
+				{{ result.object.location.name_std }}
+				</div>
+				{% endif %}
+					{% if result.object.price %}				
+				<div class="my-color pull-right"><b><p><i class="fa fa-inr"></i>&nbsp;{{result.object.price}}</p></b></div>
+					{% endif %}
+				</div> 
+
+						</div>		  		    		
+					</div>		  		    		
+
+					{% elif result.content_type == "talks.talk" %}
+
+				<div class="item talk">
+					<div class="talk-content">
+						<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ result.object.added | feed_time }}</div>
+						<a href="/talks/{{ result.object.talk.slug }}"><div class="talk-text">
+							<p>
+								{{ result.object.title }}
+							</p>
+						</div>
+						</a> 
+						<div class="tags-talk">{% for tag in result.object.tags.all %}<a class="talk-tag-name" href='/search/?q={{ tag.name }}'> {{tag.name}} </a>{% endfor %}</div>
+						<div class="talk-img-container">
+							{% if result.object.user.avatar %}
+								{% thumbnail result.object.user.avatar "70x70" crop="center" as im %}
+									<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+								{% endthumbnail %}
+							{% else %}
+								{% thumbnail result.object.business.logo "70x70" crop="center" as im %}
+									<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+								{% endthumbnail %}
+							{% endif %}
+						</div>
+						<div class="item-talk-user">
+							<a href="/{{ result.object.user.user_id.username }}"> {{ result.object.user.user_id.get_full_name }} {{ result.object.business.name }}</a>												
+							<span>started this talk</span>
+						</div>
+					</div>					
+	</div>					
+
+				{% endif %}
+{% endfor %}
+{% show_more " " %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/masonry.js"></script>	
+
+<script>
+	    $('.item').delay(1000).show();		
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, 
+			{			
+			columnWidths:340,
+			gutter:40,
+			itemSelector: '.item',
+			stamp: ".static",
+			isFitWidth: true,
+			isAnimated: true,			
+			});		
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.magnific-popup.js"></script>
+<script>
+$('.link1').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+    gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+  // other options
+});
+});
+</script>

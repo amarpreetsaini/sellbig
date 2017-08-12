@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Login to SellBig.in | Free Classified Ads</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="viewport" content="width=device-width">
+	<meta property="og:title" content="Free Classified Ads , Post a add for free , Discuss Rate and review products , Online classified for free" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="http://www.sellbig.in" />
+	<meta property="og:description" content="Sellbig offers free classfied ads, Post add for free for many categories like Vehicles, Household, Electronics, Mobile, Media,Kids, Pets and Health" />
+	<link rel = "stylesheet" type="text/css" href="/static/css/bootstrap_small.min.css" />  
+<style>
+#website-cover{
+	background-color: rgba(143,54,0,0.1);
+	background-image: url({{ STATIC_URL }}/img/products_tmb.png);
+	background-repeat: repeat;
+	position:fixed;
+	width:100%;
+	height:100%;
+	margin:0px!important;
+	padding:0px!important;
+	overflow:hidden;
+}
+.bottom-divider{
+	border-bottom: 1px solid rgb(233, 228, 219)!important;
+}
+.btn-facebook{
+border:3px solid #3b5998!important;
+color:#FFF;
+background-color:#3b5998;
+}
+.btn-danger{
+background-color: rgb(227,94,14)!important;
+}
+.danger-color{
+color:rgb(227,94,14)!important;
+}
+.text-dark-gray{
+color:#595959!important	
+	}
+.btn-facebook:hover{
+border-bottom:3px solid #3C4F78!important;
+color:#FFF!important;
+}
+
+</style>	
+</head>
+<body >
+	<div id="website-cover"></div>	
+ <div class="container-fluid">
+<div class="hidden-sm hidden-xs">
+</div>
+		<div class="col-md-5 hidden-sm hidden-xs">
+		<h1 class="col-md-12 "><b class="danger-color">S</b><b class="text-dark-gray ">ell</b><b class="danger-color">B</b><b class="text-dark-gray ">ig.in</b></h1>
+		</div>
+
+
+      <div class="col-md-4 col-sm-12 col-xs-12 col-md-offset-4">
+
+<div class="panel panel-default">
+		<div class="panel-body">
+
+			<div class="form-group">
+			<form action="{% url 'facebook_connect' %}" class="col-xs-12 text-center form-horizontal" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="/" name="next" />              
+                <div id="facebook_login_js">
+				<a class="btn btn-facebook" onclick="F.connect(this.parentNode.parentNode); return false;">&nbsp;&nbsp;&nbsp;<b>Login with Facebook</b>&nbsp;&nbsp;</a>
+                </div>
+				<input type="hidden" name="next" value="{{request.GET.next}}">
+				<small class="text-muted">This is recomended method. You get exclusive featues like facebook post share and facebook friends. We will not post anything without your permission.</small>
+			</form>
+				</div>
+
+				</div>
+</div>
+
+</div>
+
+      <div class="col-md-4 col-sm-12 col-xs-12 col-md-offset-4">
+		<div class="form-signin panel panel-default" id="cover-containers">
+		<a href="/" class="pull-right" style="margin:5px"><span class="text-muted  glyphicon glyphicon-remove"></span></a>
+		<h3 class=" text-center">Login </h3>	
+		<div class="bottom-divider"></div>
+		
+
+		<div class="panel-body">
+			<form action="" method="post" class=" form-horizontal divider-label" role="form" name="loginform">				
+				{% csrf_token %}
+						
+			<div class="form-group">				
+				<div class="col-xs-12">
+				<div class="input-group">
+					<div class="input-group-addon">&nbsp;<i class="glyphicon glyphicon-user"></i>&nbsp;Username</div>
+					<input type="text" name="username" value="" id="username" class="form-control" placeholder="Enter your username" required autofocus>
+				</div>
+				</div>
+			</div>
+			<div class="form-group">				
+				<div class="col-md-12">
+				<div class="input-group">
+					<div class="input-group-addon">&nbsp;<i class="glyphicon glyphicon-lock"></i>&nbsp;Password&nbsp;</div>
+					<input type="password" name="password" value="" id="password" class=" form-control "  placeholder="Enter your Password" required >
+				</div>
+				</div>
+			</div>
+					{% if form.errors %}
+						<p class="text-danger">Enter a valid username or password</p>
+					{% endif %}
+			
+			<div class="form-group">	
+				<div class="col-xs-12"> 			
+					<button type="submit" class="btn btn-danger  btn-block" ><b>Login</b></button>
+				</div>
+<!--
+				<div class="col-xs-6">		
+						<a href ="/" class="text-muted btn btn-block btn-default " role="button"><span class="fa fa-reply-all"></span>&nbsp;&nbsp;Go Back</a>					
+				</div>					
+-->
+			</div>
+
+			<div class="form-group"> 
+			<div class="col-xs-12">
+			<small class="text-muted">By logging in you accept <a href="{% url 'policy' %} " target='_blank'>Privacy policy</a> and <a href="{% url 'terms' %}" target='_blank'>Terms of Use</a> by sellbig.in</small>
+			</div>
+			</div>
+
+			<div class="form-group">	
+				<div class="col-xs-12">		
+					<a href ="{% url 'password_reset' %}" class=" pull-left text-muted">Forgot your password / username?</a>
+				</div>
+
+			</div>
+	
+			<div class="form-group">
+					<div class="col-xs-6">		
+					<a href ="{% url 'signup' %}?&next={{ request.GET.next }}" class="btn btn-default  btn-block" >Register Now</a>					
+				</div>
+				<div class="col-xs-6">		
+						<a href ="/" class="text-muted btn btn-block btn-default " role="button"><span class="fa fa-reply-all"></span>&nbsp;&nbsp;Go to Home</a>					
+				</div>					
+
+			</div>
+	
+			</form>	
+	
+			
+			</div>
+
+</div>
+</div>
+{% include 'django_facebook/_facebook_js.html' %}
+</div> <!-- /container -->
+
+	</body>	
+</html>

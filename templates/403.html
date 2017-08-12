@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>403 Dont have permissions to access the page | Free Classified Ads</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="viewport" content="width=device-width">
+	<meta property="og:title" content="Free Classified Ads , Post a add for free , Discuss Rate and review products , Online classified for free" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="http://www.sellbig.in" />
+	<meta property="og:description" content="Sellbig offers free classfied ads, Post add for free for many categories like Vehicles, Household, Electronics, Mobile, Media,Kids, Pets and Health" />
+	<link rel = "stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap_small.min.css" />
+	<link rel = "stylesheet" type="text/css" href="{{ STATIC_URL }}css/style_cover.min.css" />  
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<body>
+	<style>
+#website-cover{
+	background-color: rgba(143,54,0,0.1);
+	background-image: url({{ STATIC_URL }}/img/products_tmb.png);
+	background-repeat: repeat;
+	position:fixed;
+	width:100%;
+	height:100%;
+	margin:0px!important;
+	padding:0px!important;
+	overflow:hidden;
+}
+.bottom-divider{
+	border-bottom: 1px solid rgb(233, 228, 219)!important;
+}
+.btn-facebook{
+border:3px solid #3b5998!important;
+color:#FFF;
+background-color:#3b5998;
+}
+.btn-danger{
+background-color: rgb(227,94,14)!important;
+}
+.btn-facebook:hover{
+border-bottom:3px solid #3C4F78!important;
+color:#FFF!important;
+}
+
+</style>	
+<body>
+<div id="website-cover"></div>	
+<br>
+<div class="col-xs-12 col-md-6 col-md-offset-3 panel panel-default">
+
+<h1 class="text-center" style="font-size:100px">403</h1>
+<h1 class="text-center">No trespassing !!!</h1>
+<h4 class="text-center">You don't have permissions to access this page.</h4>
+<h4 class="text-center">Please check the url.</h4>
+
+				<div class="col-xs-12 text-center">		
+				<div class="form-group">							
+						<a href ="/" class="text-muted btn btn-danger " role="button"><span class="fa fa-home"></span><b>&nbsp;&nbsp;Take me Home</b></a>					
+				</div>					
+				</div>					
+
+<div class="col-md-12 col-xs-12 ">
+	<div class="text-center text-dark-black  ">
+    
+	<h4 class="text-center">Buy or Search in below categories</h4>
+		<div class="row">
+		{% for cat in cat_obj %}
+		<div class="col-xs-3">		
+		<div class="divider">
+		<a class="text-dark-gray" href='/search/?q=&cat={{ cat.name }}'>
+<span class="fa-stack fa-lg fa-3x ">
+<i class="fa fa-circle fa-stack-2x 	{% cycle 'color-green' 'color-blue' 'color-yellow' 'color-dark'  'color-red' 'color-brown' 'color-gold'%}"></i>
+<i class="fa fa-stack-1x fa-inverse text-shadow {% cycle 'fa-car' 'fa-home' 'fa-plug' 'fa-mobile' 'fa-music' 'fa-child' 'fa-paw' 'fa-heartbeat'%}"></i></a>
+</span><p>{{ cat.name }}</p>
+		</div>
+		</div>		
+		{% endfor %}										
+
+</div>
+</div>
+</div>
+<h4 class="text-center">Contact us  at <a href="mailto:support@sellbig.in">support@sellbig.in</a>.</h4>
+
+</div>
+	</body>	
+</html>

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}
+{% load widget_tweaks %}
+{% block content%}
+<br><br><br>
+<div class="feed ">
+<div class="contacts static">	
+		<div class="img-profile-container">		
+			{% thumbnail user_info.avatar "200x200" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}
+		</div>	
+		<div class="img-inner-profile-container"></div>
+<!--			<div class="col-md-2 col-sm-4 col-xs-4 pull-right"><h5 class="">				
+					<div id="tour-add-wish" class="add-wish btn btn-default btn-danger btn-sm pull-right tooltip-marker" data-placement="bottom" title="Add wish to Buy, Sell and Rent"><span class="glyphicon glyphicon-plus "></span><b> Free Ad</b></div>	
+				</h5>
+			</div>-->
+	<div class="col-xs-12" >
+			<h4 class="text-center text-dark-gray">
+				<p>{{ user_info.user_id.get_full_name }}</p>												
+			</h4>
+							<a href ="{% url 'edit_profile' %}">
+					<div class="btn btn-default btn-xs pull-right tooltip-marker" data-placement="bottom" title="Edit profile"><span class="glyphicon glyphicon-pencil text-muted"></span></div>	
+				</a>
+
+			<h5 class="text-center text-dark-gray">	
+				{% if user_info.location %}<p><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{ user_info.location.name_std|set_length:25 }}</p>{% endif %}
+<!--				{% if user_info.contact %}<p><i class="glyphicon glyphicon-phone"></i>&nbsp;&nbsp;{{ user_info.contact }}</p>{% endif %}
+-->
+			</h5>		
+	</div>
+
+<div class="col-xs-12">
+		{% if not request.user.facebook_id  %}	
+		<div class="col-md-12 col-sm-12 col-xs-12 text-center">
+		<form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
+			<a class="btn btn-facebook btn-sm tooltip-marker" data-placement="bottom" title="Connect with facebook helps you to invite your facebook friends." href="javascript:void(0);" onclick="F.connect(this.parentNode);">
+			<span class="fa fa-facebook-square fa-lg"></span> &nbsp;<b>Connect with Facebook</b></a><input type="hidden" value="{{ request.path }}" name="next" />
+			<input type="hidden" name="connect_facebook" value="1">
+			{% csrf_token %}
+		</form>
+		</div>
+		{% endif %}
+</div>
+<div class="col-xs-12">
+<br>
+<div class="divider-top row"></div>
+</div>
+
+<div class="col-xs-12">	
+	<div class="text-center text-muted"><b>Friends</b></div>
+		{% for friend in friends %}
+			<div class="friendslist tooltip-marker" data-placement="bottom" title="{{ friend.user_id.get_full_name }}">
+				{% thumbnail friend.avatar "120x120" crop="center" as im %}
+					<a href="/{{ friend.user_id.username }}">
+						<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					</a>
+				{% endthumbnail %}	
+			</div>		
+		{% endfor %}
+			<div class="friendslist text-center">
+			<a href="/{{ user_info.user_id.username }}/contacts">
+			<i class="text-gray fa fa-plus-circle fa-3x img-circled"></i>
+			<small class="text-muted ">Add</small>
+			</a>
+			</div>
+	</div>
+</div>
+
+<div class="user-feed-items">
+		{% include 'my_home_feed.html' %}
+</div>
+</div>
+
+<div class="overlay-back2"></div>
+<div class="Closewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Af Closed Successfully </div></div>
+<div class="rewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Shared Successfully </div></div>
+<div class="rating-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Rating done Successfully </div></div>
+<div class="share-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Billboard Shared Successfully </div></div>
+
+</div>
+
+<div id="msg-modal2" class="modal fade">
+{% include 'new_message.html' %}
+</div><!-- /.modal -->
+
+
+{% include 'django_facebook/_facebook_js.html' %}
+{% include 'common_js.html' %}
+
+{% block js %}
+{{ block.super }}
+
+<script src="{{ STATIC_URL }}js/statictest.js" type="text/javascript"></script>
+
+<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+<script>		
+	$('.user-feed-items').endlessPaginate({
+		paginateOnScroll: true,
+		paginateOnScrollMargin: 100
+	});
+</script>
+
+<script>
+$(".btn-filter3").on('click',function(){
+$(".filter3").slideToggle();
+});
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+<script>
+$(".add-wish").click(function(){
+$('#profile-wish-modal').modal();
+});
+</script>
+
+{% if request.session.new_user == 1 %}
+<script>
+$('#profile-wish-modal').modal();
+</script>
+{% endif %}
+
+{% endblock %}
+{% endblock %}

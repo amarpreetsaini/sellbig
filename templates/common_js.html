@@ -1,0 +1,171 @@
+<script>
+$('.modal').on('hidden.bs.modal', function () {
+$('.modal').modal('hide');});
+</script>
+
+<script>
+	var username;
+	$('.feed').on('click','.msg-btn',function(){
+	$('#msg-modal').modal();
+	username=$(this).data('username');
+	var fullname=$(this).data('fullname');
+	$('#msg-modal').find('.modal-title').html('<p>Send a message to '+ fullname +'</p>');
+	});	
+	$('.send-msg').one('click',function() { // catch the form's submit event
+	$('<input />').attr('type', 'hidden')
+          .attr('name', "to_user")
+          .attr('value', username)
+          .appendTo('.send-message-form');
+      return true;
+	});
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.raty.js"></script>	
+
+<script>
+$('.star').raty('destroy');
+$('.star').raty({
+	width:140,
+	starOff : '/static/img/star_off.png', 
+	starOn : '/static/img/star_on.png', 
+	score: function() {
+	return $(this).attr('data-score');
+	},
+	
+   click: function(score, evt) {	   	
+    var b = $('#star-rate').val();
+    var c = $(this).closest("form").find('input[name|="rating_tag_id"]').val();
+    var d = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+          $.ajax({
+			type: 'POST',          
+			url: '',			
+			data:{'rated':score,'rate': b,'rating_tag_id':c, 'csrfmiddlewaretoken':d},
+			context: this,
+            success: function(data){  			   
+			$(".overlay-back2").show().delay(1500).fadeOut();
+			$(".rating-alert").show().delay(1500).fadeOut();
+			   }         
+	});
+    }
+}); 
+</script>
+
+<script>
+	$('.feed').on('click','.rewish-btn',function() { // catch the form's submit event
+    var wishid = $(this).closest("form").find('input[name|="wish_id"]').val();
+    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'wish_id':wishid,'re-wish':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".rewish-alert").show().delay(1500).fadeOut();
+		},
+		statusCode: {
+		404: function() {
+		  alert('This Ad seems to be closed by user. Please refresh the page.');
+		}}
+		 });  		
+	});
+</script>
+
+<script>
+	$('.feed').on('click','.share-btn',function() { // catch the form's submit event
+    var billboardid = $(this).closest("form").find('input[name|="billboard_id"]').val();
+    var businessid = $(this).closest("form").find('input[name|="business_id"]').val();
+    var coin = $(this).closest("form").find('input[name|="csrfmiddlewaretoken"]').val();
+		$.ajax({
+		type: 'POST',          
+		url: '',			
+		data:{'billboard_id':billboardid,'business_id':businessid,'share':'', 'csrfmiddlewaretoken':coin},
+		success: function(data){     
+		$(".overlay-back2").show().delay(1500).fadeOut();
+		$(".share-alert").show().delay(1500).fadeOut();				
+		}         
+		});  		
+		
+	});
+</script>
+
+
+<script>
+$('.feed').on('click','.close-wish',function() {
+   var docHeight = $(this).closest('.item-wish').height();
+  $(this).closest(".item-wish").append("<div id='disabled-wish'><p class='lead text-center'>This Ad is closed by user.</p></div>");
+   $("#disabled-wish")
+      .height(docHeight)
+      .addClass('disabled-wish');
+});
+</script>
+
+{% if feed.wish.status == 'D' %}
+<script>
+   var docHeight = $(this).closest('.item-wish').height();
+   $(this).closest(".item-wish").append("<div id='disabled-wish'><p class='lead text-center'>This Ad is closed by user.</p></div>");
+   $("#disabled-wish")
+      .height(docHeight)
+      .addClass('disabled-wish');
+</script>
+{% endif %}
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.magnific-popup.js"></script>
+<script>
+$('.link3').each(function() { // the containers for all your galleries
+$(this).magnificPopup({
+  delegate: 'a', // child items selector, by clicking on it popup will open
+  type: 'image',
+    gallery: {
+      enabled: true
+    },  // other options
+closeOnBgClick:'true',	
+  // other options
+});
+});
+</script>
+
+<script type="text/javascript" src="/static/js/masonry.js"></script>
+<script>
+		$(function() {
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, {
+		columnWidths:340,
+		gutter:40,
+		itemSelector: '.item',
+		stamp: ".static",
+		isFitWidth: true,
+		isAnimated: true,
+		});		
+		});		
+</script>
+
+
+<script>
+$('.billboard-one').click(function(){
+var imageurl = $(this).data("imageurl");	
+$('.overlay-back2').after('<div class="big-image"><img src="' + imageurl + '"></div>');
+$('.overlay-back').fadeIn(500);
+$('.big-image').fadeIn(500);	
+});
+</script>
+<script>
+
+$( document ).on( 'keydown', function ( e ) {
+    if ( e.keyCode === 27 ) { // ESC
+        $('.big-image').remove();
+        	$('.overlay-back').fadeOut(500);	
+    }
+});
+
+$(document).mouseup(function (e)
+{
+    var container = $("big-image");
+    if (!container.is(e.target) // if the target of the click isn't the container...
+        && container.has(e.target).length === 0) // ... nor a descendant of the container
+    {
+    $('.big-image').remove();
+   	$('.overlay-back').fadeOut(500);	
+    }
+});
+</script>

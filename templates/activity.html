@@ -1,0 +1,55 @@
+
+{% load thumbnail %}
+{% load calculations %}    		
+	{% load endless %}
+	{% paginate activity_obj using "activity" %}
+<ul class="list-group">
+	{% for activity in activity_obj %}
+		{% if activity.type == "B" %}
+		<li class="media activity-list">
+			<div>
+			<small class="text-muted">
+				<span class="text-gray fa fa-plus-circle fa-3x pull-left"></span>
+			<a href="/{{ activity.user.user_id.username }}">{{ activity.user.user_id.get_full_name }}</a>
+			added <a href="/business/{{ activity.business.official_tag }}">{{ activity.business.name }}</a>
+			 as new business connection							
+			<span class="pull-right">{{ activity.added | feed_time }}</span></small>				
+			</div>
+		</li>
+		{% elif activity.type == "C" %}	
+		<li class="media activity-list">
+			<div>
+			<small class="text-muted">
+				<span class="mg-r pull-left">
+					{% thumbnail activity.user.avatar "30x30" crop="center" as im %}
+						<img class="img-circle" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+					{% endthumbnail %}
+				</span>
+
+				<a href="/{{ activity.user.user_id.username }}">{{ activity.user.user_id.get_full_name }}</a>
+				commented "{{ activity.comment|set_length:25 }}" in talk 
+				<a class="text-muted" href="/talks/{{ activity.talk.slug }}">"{{ activity.talk.title|set_length:25 }}"
+				</a>
+				<span class="pull-right">{{ activity.added | feed_time }}</span></small>				
+			</div>
+		</li>
+				
+		{% else %}
+		<li class="media activity-list">
+			<small class="text-muted">
+			<span><i class="text-gray fa fa-plus-circle fa-3x pull-left"></i></span>
+			<a href="/{{ activity.from_user.username }}">{{ activity.from_user.get_full_name }}</a>
+			and <a href="/{{ activity.to_user.username }}">{{ activity.to_user.get_full_name }}</a>
+			became friends						
+			<span class="pull-right">{{ activity.added | feed_time }}</span>
+			</small>				
+		</li>		
+		{% endif %}
+		{% endfor %}
+</ul>
+	{% show_more "Load More"%}
+	<!--{% show_pages %}-->
+
+<script>	
+		$(".activity").css("top",activity_top);				 	
+</script>

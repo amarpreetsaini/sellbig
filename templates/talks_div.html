@@ -1,0 +1,19 @@
+{% load calculations %}
+{% load widget_tweaks %}
+{% load thumbnail %}
+
+	<div class="item talk ">
+		<div class="talk-content">
+				<div class="item-date-time"><div class="glyphicon glyphicon-time drk-btn-color"></div> {{ talk.added | feed_time }}</div>
+			<div class="talk-text"><a href="/talks/{{ talk.slug }}"><p>{{ talk.title }}</p></a></div> 
+			<div class="tags-talk">{% for tag in talk.tags.all %}<a class="talk-tag-name"> {{tag.name}} </a>{% endfor %}</div>
+			<div class="talk-img-container">
+				{% thumbnail talk.user.avatar "70x70" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+			</div>
+			<div class="item-talk-user"><a href="/{{ talk.user.user_id.username }}"> {{ talk.user.user_id.get_full_name }} {{ talk.business.name}}</a>												
+				<span>started this talk</span>
+		</div>
+		</div>					
+	</div>

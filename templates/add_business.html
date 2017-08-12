@@ -1,0 +1,170 @@
+{% load widget_tweaks %}
+{% load thumbnail %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>doroko.com{% block title %} {% endblock %}</title>
+	<link rel = "stylesheet" type="text/css" href="/static/css/bootstrap.css" />  
+	<link rel = "stylesheet" type="text/css" href="/static/css/style_signup.css" />  
+	<link rel = "stylesheet" type="text/css" href="/static/css/jquery-ui-1.10.4.custom.css" />
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<link rel = "stylesheet" type="text/css" href="/static/css/font-awesome.min.css" />
+</head>
+
+<body >
+	<div id="website-cover"></div>
+	<br><br><br>
+		<div class="col-md-12">
+		<div class="col-md-4 col-md-offset-4 panel panel-default">  <h1 class="text-center">Business details</h1>
+
+{% if form.official_tag.value %}
+	<form action="" method="post" class="form-horizontal divider-label" enctype="multipart/form-data" id="image-upload">
+		<div class="form-group">
+			<div class="col-xs-2 col-md-2">  
+				<div class="profile-img-container">
+					{% for biz in user.business_set.all %}
+						{% thumbnail biz.logo "50x50" crop="center" as im %}
+							<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+						{% endthumbnail %}
+					{% endfor %}
+				</div>					
+			</div>
+			<div class="col-xs-8 col-md-6">  	 
+				<div class="upload form-control input-sm simplebox">
+					{% render_field logo_form.logo type="file" id="profile-img"  %}					
+				</div>
+			</div>
+			<div class="col-xs-6 col-md-4">  
+				<button type="submit" class="btn btn-sm btn-default pull-right">Upload &nbsp;&nbsp;<span class="glyphicon glyphicon-cloud-upload"></span></button>		
+				<input type="hidden"  name="logo">		
+			 {% csrf_token %}							 
+			</div>					
+		</div>					
+		 
+	</form>
+{% endif %}
+
+
+		<form action="" method="post" class="form-horizontal" >      
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-briefcase fa-fw"></i>&nbsp;Name</span>
+				{% render_field form.name type="text" class="form-control input-sm simplebox" id="InputFirstname" placeholder="Business Name" %}				
+				{{ form.name.errors }}
+				</div>
+				{% if form.name.errors %}
+					<p class="text-danger">{{ form.name.errors.as_text }}</p>
+				{% endif %}
+
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-copy fa-fw"></i>&nbsp;About us</span>
+				{% render_field form.description type="text" class="form-control input-sm simplebox" id="" placeholder="Description" %}				
+				{{ form.first_name.errors }}
+				</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-tag fa-fw"></i>&nbsp;Tag</span>
+				{% render_field form.official_tag type="text" class="form-control input-sm simplebox" id="" placeholder="Tag" %}				
+				{{ form.first_name.errors }}
+			</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-map-marker fa-fw"></i>&nbsp;Location</span>
+				{% render_field form.location type="text" id="edit-location" class="form-control input-sm simplebox" id="" placeholder="Location" %}				
+				{{ form.first_name.errors }}
+				</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-laptop fa-fw"></i>&nbsp;Website</span>
+				{% render_field form.website type="text" class="form-control input-sm simplebox" id="" placeholder="Website" %}				
+				{{ form.first_name.errors }}
+			</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-calendar fa-fw"></i>&nbsp;Start Date</span>
+				{% render_field form.start_date type="text" id="datepicker" class="form-control input-sm simplebox" id="" placeholder="Start Date" %}				
+				{{ form.first_name.errors }}
+			</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-envelope-o fa-fw"></i>&nbsp;Email</span>
+				{% render_field form.email type="text" class="form-control input-sm simplebox" id="" placeholder="Email" %}				
+				{{ form.first_name.errors }}
+			</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-phone fa-fw"></i>&nbsp;Phone</span>
+				{% render_field form.contact type="text" class="form-control input-sm simplebox" id="" placeholder="Contact number" %}				
+				{{ form.first_name.errors }}
+			</div>
+			</div>
+		</div>
+		<div class="form-group">				
+			<div class="col-xs-12 col-md-12">
+				<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon setting-span"><i class="pull-left fa fa-map-marker fa-fw"></i>&nbsp;Related Tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				{% render_field form.tags type="text" class="form-control input-sm simplebox" id="" placeholder="Related Tags" %}				
+				{{ form.tags.errors }}
+			</div>
+			</div>
+		</div>
+
+		<div class="form-group"> 
+
+					<div class="col-xs-6 col-md-5 pull-left">
+					<a href ="{% url 'my_office' %}" class="btn-block text-muted btn btn-default pull-right" role="button"><span class="fa fa-reply-all"></span>&nbsp;&nbsp;Back to Profile</a>					
+					</div>		
+					<div class="col-xs-6 col-md-6  pull-right"> 
+						<button button="submit" class="btn btn-danger btn-block"><b>Save</b></button>	
+					</div>			
+				<input type="hidden"  name="details">		
+
+		</div> 
+
+      
+      {% csrf_token %}
+  </form>
+
+		</div>
+	</div>
+		
+<script src="{{ STATIC_URL }}js/jquery-ui-1.10.4.custom.js"></script>
+
+<script>
+$(function() {
+$( "#datepicker" ).datepicker({ dateFormat: "yy-mm-dd" });
+});
+</script>
+
+<script>
+$( "input#edit-location" ).autocomplete({
+	source: "{% url 'autocomplete_city' %}",
+	minLength: 2
+});
+</script>
+
+	</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Create an account | Free Classified Ads</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="viewport" content="width=device-width">
+	<meta property="og:title" content="Free Classified Ads , Post a add for free , Discuss Rate and review products , Online classified for free" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="http://www.sellbig.in" />
+	<meta property="og:description" content="Sellbig offers free classfied ads, Post add for free for many categories like Vehicles, Household, Electronics, Mobile, Media,Kids, Pets and Health" />
+	<link rel = "stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap_small.min.css" />  
+<style>
+#website-cover{
+	background-color: rgba(143,54,0,0.1);
+	background-image: url({{ STATIC_URL }}/img/products_tmb.png);
+	background-repeat: repeat;
+	position:fixed;
+	width:100%;
+	height:100%;
+	margin:0px!important;
+	padding:0px!important;
+	overflow:hidden;
+}
+.bottom-divider{
+	border-bottom: 1px solid rgb(233, 228, 219)!important;
+}
+.btn-facebook{
+border:3px solid #3b5998!important;
+color:#FFF;
+background-color:#3b5998;
+}
+.danger-color{
+color:rgb(227,94,14);
+}
+.btn-danger{
+background-color: rgb(227,94,14)!important;
+}
+#InputFirstname,#InputPassword1{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right:0px;
+}
+#InputLastname,#InputPassword2{
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.btn-facebook:hover{
+border-bottom:3px solid #3C4F78!important;
+color:#FFF!important;
+}
+.danger-color{
+color:rgb(227,94,14)!important;
+}
+.text-dark-gray{
+color:#595959!important	
+	}
+
+#signup-zipcode{
+	display:none;
+	}
+</style>
+</head>
+<body>
+{% load widget_tweaks %}
+	<div id="website-cover"></div>	
+ <div class="container-fluid">
+<div class="hidden-sm hidden-xs">
+</div>
+		<div class="col-md-5 hidden-sm hidden-xs">
+		<h1 class="col-md-12 "><b class="danger-color">S</b><b class="text-dark-gray ">ell</b><b class="danger-color">B</b><b class="text-dark-gray ">ig.in</b></h1>
+		</div>
+
+<div class="col-md-12 ">
+	<div class="col-md-7">
+
+		<div class="hidden-xs hidden-sm">
+          <h1 class="col-md-12 text-dark-gray ">
+          <div class="col-md-12 ">Why you need to create an account ?</div>
+          </h1>
+		<div class="col-md-12">
+         <ul class="list-unstyled">
+          <li class="col-md-12"><h4 class="text-muted"><i class="pull-left text-dark-gray glyphicon glyphicon-list-alt "></i>&nbsp;&nbsp;Manage your <span class="danger-color"><b>Ads and Profile</b></span> in one place.</h4></li> 
+          <li class="col-md-12"><br></li>
+
+          <li class="col-md-12"><h4 class="text-muted"><i class="pull-left text-dark-gray glyphicon glyphicon-globe " ></i>&nbsp;&nbsp;This is not just another online classified, but <span class="danger-color"><b>Social Classified Network</b></span>.</h4></li>
+          <li class="col-md-12"><br></li>
+          <li class="col-md-12"><h4 class="text-muted"><i class="pull-left text-dark-gray glyphicon glyphicon-bullhorn "></i>&nbsp;&nbsp;You can sell and buy stuff with your <span class="danger-color"><b>friends and people</b></span> around.</h4></li> 
+          <li class="col-md-12"><br></li>
+
+<!--
+          <li class="col-md-12"><h4 class="text-muted" ><i class="pull-left text-dark-gray glyphicon glyphicon-transfer "></i>&nbsp;&nbsp;You can <span class="danger-color"><b>discuss, rate and review</b></span> products and services.</h4></li>
+-->
+          <li class="col-md-12"><br></li>
+          </ul>
+		</div>
+
+			<div class="col-md-12 text-center">
+				<a href ="{% url 'login' %}?&next={{ request.GET.next }}" class="btn btn-default" >
+					<div  class="text-muted"> Already Registered ?<b> Login now</b></div>
+				</a>
+			</div>			
+			<p class="col-md-12 text-center">	 			
+				<span class="lead text-muted">or</span>
+			</p>			
+		</div>
+		
+		<div class="col-md-8 col-xs-12 col-md-offset-2">
+				<div class="row">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			<div class="form-group">
+
+			<form action="{% url 'facebook_connect' %}" class="col-xs-12 text-center form-horizontal" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="/" name="next" />              
+                <div id="facebook_login_js">
+				<a class="btn btn-facebook" onclick="F.connect(this.parentNode.parentNode); return false;">&nbsp;&nbsp;&nbsp;<b>Login with Facebook</b>&nbsp;&nbsp;</a>
+                </div>
+				<input type="hidden" name="next" value="{{request.GET.next}}">
+						<small class="text-muted">This is recomended method. You get exclusive featues like facebook post share and facebook friends. We will not post anything without your permission.</small>
+
+			</form>
+				</div>
+
+				</div>
+			</div>
+			</div>
+		</div>
+
+	</div>
+
+	
+	<div class="col-md-5 col-sm-12 col-xs-12 pull-right" >
+
+		<div class="panel panel-default">
+		<a href="/" class="pull-right" style="margin:5px"><span class="text-muted  glyphicon glyphicon-remove"></span></a>
+		<h3 class="text-center">Register with email</h3>
+		<div class="bottom-divider"></div>
+		<div class="panel-body">
+
+		
+		<form action="" method="post" class="form-horizontal " role="form" name="signupform">
+			{{ form.non_field_errors }}
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+					<div class="">
+						<div class=" col-xs-6 col-md-6">
+							<div class="row">
+								<div class="input-group">
+								 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+									{% render_field form.first_name type="text" class="form-control  simplebox" id="InputFirstname" placeholder="First Name" required="required"%}				
+									{% if form.first_name.errors %}
+										<p class="text-danger">{{ form.first_name.errors.as_text }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-6 col-md-6">
+							<div class="row">
+							{% render_field form.last_name type="text" class="form-control  simplebox" id="InputLastname" placeholder="Last Name" required="required"%}
+							{% if form.last_name.errors %}
+								<p class="text-danger">{{ form.last_name.errors.as_text }}</p>
+							{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+			<div class="col-xs-12 col-md-12">
+			<div class="col-xs-12 col-md-12 input-group ">
+				 <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+				{% render_field form.email type="email" class="form-control  simplebox"  id="InputEmail2"  placeholder="Enter Email" required="required"%}
+				{% if form.email.errors %}
+					<p class="text-danger">{{ form.email.errors.as_text }}</p>
+				{% endif %}
+				</div>
+			</div>
+			</div>
+
+			<div class="form-group">				
+				<div class="col-xs-12 col-md-12">
+					<div class="">
+						<div class=" col-xs-6 col-md-6">
+							<div class="row">
+								<div class="input-group">
+								 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+								{% render_field form.password1 type="password" class="form-control   simplebox" id="InputPassword1" placeholder="Password" required="required"%}
+								{% if form.password2.errors %}
+									<p class="text-danger col-md-12">{{ form.password1.errors.as_text }}</p>				
+								{% endif %}
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-6 col-md-6">
+							<div class="row">
+							{% render_field form.password2 type="password" class="form-control   simplebox" id="InputPassword2" placeholder="Confirm Password" required="required"%}
+							{% if form.password2.errors %}
+								<p class="text-danger col-md-12">{{ form.password2.errors.as_text }}</p>				
+							{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+			<div class="col-xs-12 col-md-12">
+			<div class="col-xs-12 col-md-12 input-group ">
+				<span class="input-group-addon"><b>sellbig.in /</b></span>
+				{% render_field form.username type="text" class="form-control   simplebox" id="InputUsername" placeholder="Username" required="required"%}
+				
+			</div>
+				{% if form.username.errors %}
+					<p class="text-danger col-md-12 ">{{ form.username.errors.as_text }}</p>				
+				{% endif %}				
+
+			</div>
+			</div>
+			<div class="form-group"> 
+			<div class="col-xs-12">
+			<small class="text-muted">By logging in you accept <a href="{% url 'policy' %} " target='_blank'>Privacy policy</a> and <a href="{% url 'terms' %}" target='_blank'>Terms of Use</a> by sellbig.in</small>
+			</div>
+			</div>
+			
+			<input id="signup-zipcode" name="zipcode" >
+
+			<div class="form-group"> 
+				<div class="col-md-6 col-xs-6"> 
+				<button button="submit" class="btn btn-danger btn-block pull-right" ><b>Register Now</b>&nbsp;&nbsp;&nbsp;<i class="fa fa-chevron-right"></i></button>	
+				</div>				
+				<div class="col-md-6 col-xs-6">		
+						<a href ="/" class="text-muted btn btn-block btn-default " role="button"><span class="fa fa-reply-all"></span>&nbsp;&nbsp;Go to Home</a>					
+				</div>									
+			</div> 
+			 {% csrf_token %}				
+				<input type="hidden" name="next" value="{{request.GET.next}}">
+			</form>
+
+			<div class="col-xs-12">		
+				<div class="bottom-divider " style="margin:20px 0px"></div>
+			</div>
+			<div class="col-xs-12 text-center">		
+				<a href ="{% url 'login' %}?&next={{ request.GET.next }}" class="btn btn-default" style="margin-bottom:20px">
+					<div  class="text-muted"> Already Registered ?<b> Login now</b></div>
+				</a>					
+			</div>
+			<div class="col-xs-12">	
+				<div class="col-xs-12 text-center">		
+					<a href ="{% url 'password_reset' %}" class=" text-muted">Forgot your password / username?</a>
+				</div>
+			</div>
+
+
+
+	</div>
+		</div>
+		</div>
+	
+</div>
+
+</div>
+
+{% include 'django_facebook/_facebook_js.html' %}
+
+</body>
+</html>

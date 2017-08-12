@@ -1,0 +1,24 @@
+{% load calculations %}
+{% load thumbnail %}
+{% load endless %}
+{% paginate talk_obj %}    	
+
+	{% for talk in talk_obj %}
+	<div class="item talk ">
+		<div class="talk-content">
+			<div class="item-date-time tooltip-marker" data-placement="bottom" title="{{ talk.added }}"><span class="fa fa-clock-o "></span> {{ talk.added | feed_time }}	</div>
+
+			<div class="talk-text"><a href="/talks/{{ talk.slug }}"><p>{{ talk.title }}</p></a></div> 
+			<div class="tags-talk">{% for tag in talk.tags.all %}<a class="talk-tag-name"> {{tag.name}} </a>{% endfor %}</div>
+			<div class="talk-img-container">
+				{% thumbnail talk.user.avatar "70x70" crop="center" as im %}
+					<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}
+			</div>
+			<div class="item-talk-user"><a href="/{{ talk.user.user_id.username }}"> {{ talk.user.user_id.get_full_name }} {{ talk.business.name}}</a>												
+				<span>started this talk</span>
+		</div>
+		</div>					
+	</div>
+	{% endfor %}
+{% show_more " " %}

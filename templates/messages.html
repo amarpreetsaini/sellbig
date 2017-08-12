@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load calculations %}
+{% load widget_tweaks %}
+{% block head %}
+<style>
+li.list-group-item.active{
+	background-color:#E35E0E!important;
+	border-color:#E35E0E!important;
+	color:#FFF;
+	}
+</style>
+{% endblock %}
+{% block content%}
+<br><br>
+<br><br>
+
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+<div class="list-group">			
+<li class="list-group-item active">
+	<div class="btn btn-danger btn-sm pull-right " id="msg-modal-call"><i class="fa fa-plus"></i> &nbsp;&nbsp;<b>New message</b></div>		
+	<h4 class="list-group-item-heading "><b><i class="fa fa-comments fa-fw"></i>&nbsp;&nbsp;Messages</b>
+</h4>
+</li>
+{% if not threads %}
+<li class="list-group-item ">
+	<h4 class="list-group-item-heading text-center text-muted">No messages</h4>
+</li>
+{% endif %}
+
+{% for thread in threads %}
+	{% if current_user == thread.from_user %}
+		<a href="/messages/{{ thread.to_user.user_id.username }}" class="list-group-item ">
+			<div class="talk-img-container talk-comment-img img-msg-container">		
+				{% thumbnail thread.to_user.avatar "70x70" crop="center" as im %}
+				<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+				{% endthumbnail %}		
+			</div>						
+			<p class="list-group-item-text">
+				<form method="post" class="pull-right">
+				&nbsp;&nbsp;<button type="submit" name="delete" title="Delete message thread" class="btn btn-default btn-xs">x</button>
+				<input type="hidden" name="thread_id" value="{{ thread.id }}" />
+				{% csrf_token %}
+			</form>
+			</p>			
+			<p class="list-group-item-text">&nbsp;&nbsp;{{ thread.to_user.user_id.get_full_name }} <small class="pull-right">{{ thread.added | feed_time}}</small></p>			
+			<p class="list-group-item-text">&nbsp;&nbsp;{{ thread.from_title|set_length:100 }} &nbsp;&nbsp;{% if thread.from_unread != 0 %}<span class="badge">{{ thread.from_unread }}</span>{% endif %}</p>
+		</a>
+	{% else %}
+		<a href="/messages/{{ thread.from_user.user_id.username }}"  class="list-group-item">
+			<div class="talk-img-container talk-comment-img img-msg-container">		
+			{% thumbnail thread.from_user.avatar "70x70" crop="center" as im %}
+			<img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+			{% endthumbnail %}		
+			</div>	
+			<p class="list-group-item-text">
+				<form method="post" class="pull-right">
+					&nbsp;&nbsp;<button type="submit" name="delete" title="Delete message thread" class="btn btn-default btn-xs">x</button>
+					<input type="hidden" name="thread_id" value="{{ thread.id }}" />
+					{% csrf_token %}
+				</form>
+			</p>
+			<p class="list-group-item-text">&nbsp;&nbsp;{{ thread.from_user.user_id.get_full_name }}<small class="pull-right">{{ thread.added | feed_time}}</small></p>			
+			<p class="list-group-item-text">&nbsp;&nbsp;{{ thread.to_title|set_length:100 }} &nbsp;&nbsp;{% if thread.to_unread  != 0 %}<span class="badge">{{ thread.to_unread }}</span>{% endif %}</p>
+
+		</a>
+	{% endif %}			
+{% endfor %}
+</div>
+</div>
+
+<div id="msg-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">New Message</h4>
+      </div>
+	<form action="" method="post" class="form-horizontal">      				
+		<div class="modal-body">	
+			<div class="form-group">
+			<div class="col-xs-12">
+				<select name="to_user" class="form-control">
+				{% for friend in friends_obj %}
+					<option id="selected-friend" value="{{ friend.pk }}" data-username="{{ friend.user_id }}" data-fullname="{{ friend.user_id.get_full_name }}">{{ friend.user_id.get_full_name }}</option>
+				{% endfor %}
+				</select>
+			</div>
+			</div>
+			<div class="form-group">
+			<div class="col-xs-12">
+				<textarea class="form-control"  name="text" placeholder="Add message text" rows="4" cols="50" required="required"></textarea>
+			</div>
+			</div>
+				<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				<input type="hidden" name="send" ></input>		
+			</div>
+		  <div class="modal-footer">
+			<button type="submit"  class="send-msg btn btn-danger ">Send Message</button>
+		  </div>
+	</form> 
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<script>
+	$('#msg-modal-call').on('click',function(){
+	$('#msg-modal').modal();
+		});
+</script>
+
+{% endblock %}

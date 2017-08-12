@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load calculations %}
+{% load thumbnail %}
+{% load widget_tweaks %}
+{% block content %}
+<br><br><br>
+<div class="feed">
+	<div class="item start-talk static">			
+			<div class="title"><p>Trending talks</p><span>this week</span><div class="icon_trending_talks"></div></div>
+			<div class="trending_talk">			
+				{% for trending_talk in trending_talks_obj %}
+				<li><a href="/talks/{{ trending_talk.slug }}">{{ trending_talk.title|set_length:80 }}</a></li>
+				{% endfor %}		
+				{% if trending_talks_obj.count = 0  %}
+					<li class="text-center"><a>No new talks this week</a>
+					<p><a href="{% url 'talks' %}"><b>view all talks</b></a></p>
+					</li>
+				{% endif %}
+
+			</div>
+				<div class="col-xs-12 col-sm-6 col-md-6 pull-right quick-start-btn">
+				<button name="talk"  data-placement="bottom" title="Add talk to discuss products and services" type="button" id="talk-modal-call" class="tooltip-marker btn btn-danger btn-block"><span class="fa fa-microphone"></span>&nbsp;&nbsp;<b>Start a talk</b></button>
+			</div>	 		
+
+		</div>	 		
+
+	<div class="feed_page">
+		{% include "talks_feed.html" %}
+	</div>
+
+
+<div id="talk-modal" class="modal fade">
+	{% include "add_talk.html" %}
+</div><!-- /.modal -->
+</div>
+
+{% block js %}
+	{{ block.super }}
+	
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+<script>		
+        $('.feed_page').endlessPaginate({
+            paginateOnScroll: true,
+            paginateOnScrollMargin: 100
+        }); 
+</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>		
+
+<script>
+$('.modal').on('hidden.bs.modal', function () {
+$('.modal').modal('hide');
+});
+</script>
+
+<script>
+$(".btn-filter3").on('click',function(){
+$(".filter3").slideToggle();
+});
+</script>
+
+<script>
+$("#talk-modal-call").click(function(){
+$('#talk-modal').modal();
+});
+</script>	
+
+<script type="text/javascript" src="/static/js/masonry.js"></script>
+<script>
+		$(function() {
+	    $('.item').show();		
+	    var container = document.querySelector('.feed');
+		var msnry = new Masonry( container, {
+		columnWidths:340,
+		gutter: 40, 		
+		itemSelector: '.item',
+		stamp: ".static",
+		isFitWidth: true,
+		isAnimated: true,
+		});		
+		});		
+</script>
+
+{% endblock %}
+{% endblock %}

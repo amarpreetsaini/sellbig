@@ -1,0 +1,43 @@
+{% load thumbnail %}
+{% load calculations %}
+
+{% load endless %}
+{% paginate activity_obj using "activity" %}
+
+{% for activity in activity_obj %}
+	{% if activity.type == "B" %}
+	<div class="activity-comment">			
+	<div class="actvity-comment-text">		
+	<div class="activity-user"><a href="/{{ activity.user.user_id.get_full_name }}">{{ activity.user.user_id.get_full_name }}</a></div>
+	added <span><a href="/business/{{ activity.business.official_tag }}">{{ activity.business.name }}</a></span>
+	 as new business connection							
+	<div class="activity-time"><a>{{ activity.added | feed_time }}</a></div>					
+	</div>
+	</div>
+	{% elif activity.type == "C" %}	
+	
+	<div class="activity-comment">
+				
+			<div class="actvity-comment-text">
+
+			<div class="activity-user"><a href="/{{ activity.user.user_id.get_full_name }}">{{ activity.user.user_id.get_full_name }}</a></div>
+								
+			 commented <span>" {{ activity.comment|set_length:25 }}"</span> in talk <span><a href="/talks/{{ activity.talk.slug }}"> {{ activity.talk.title|set_length:25 }}</span></a>
+									<div class="activity-time"><a>{{ activity.added | feed_time }}</a></div>					
+
+			 </div>				
+	</div>
+			
+	{% else %}
+	<div class="activity-comment">								
+	
+	<div class="actvity-comment-text">		
+	<div class="activity-user"><a href="/{{ activity.from_user.username }}">{{ activity.from_user.username }}</a></div>
+	and <span><a href="/{{ activity.to_user.username }}">{{ activity.to_user.username }}</a></span>
+	became friends							
+	<div class="activity-time"><a>{{ activity.added | feed_time }}</a></div>					
+	</div>
+	</div>
+	{% endif %}
+{% endfor %}
+{% show_more %}

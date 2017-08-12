@@ -1,0 +1,194 @@
+{% load widget_tweaks %}
+  <div class="modal-dialog">
+		<div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Start a new talk</h4>
+      </div>
+
+	<div class="modal-body">
+		<form id="talk-form" action="/talks/" method="post" class="form-horizontal" role="form" >
+			<div class="form-group">
+				<label class="col-xs-2 col-sm-2 col-md-2 control-label" >Title</label>
+				<div class="col-xs-10 col-md-10">
+                    {% render_field talk_form.title id="" type="text" class="simplebox form-control" placeholder="Title" maxlength="150" required="required" %}
+					<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-2 col-sm-2 col-md-2 control-label">Description</label>
+				<div class="col-xs-10 col-md-10">
+                    {% render_field talk_form.description id="form_text_box3" type="text" class="simplebox form-control" placeholder="Description"  maxlength="500" required="required" %}
+				</div>
+			</div>
+		
+	
+			<div class="form-group">
+				<label class="col-xs-2 col-sm-2 col-md-2 control-label" for="form_tag_box3">Tags</label>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+					{% render_field talk_form.m_tags class="input-sm simplebox form-control tagsinput" id="form_tag_box3" type="text" placeholder="Tags"%}
+				</div>
+				<div class="col-xs-3 col-sm-3 col-md-3 pull-right">
+					<div class="btn-filter3 text-muted btn btn-default pull-right">
+						<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add Categories
+					</div>
+				</div>				
+			</div>
+			<div class="form-group">
+			<div class="col-md-12 col-lg-12">
+				<div class="filter3">				
+					<div class="form-group">		
+						<div class="col-sm-12 col-md-12 col-lg-12">
+							<h5 class="text-center"><b>Select categories for your talk</b></h5>	
+							<div class="table-responsive">
+							<table class="table table-bordered table-condensed">
+								<tbody>
+									<tr>						
+										<td class="chk_filter_container">
+											<input type='checkbox' value='animals' class="chk_filter" id="chk_animals4" name="talk-chk[]"/>
+											<label for="chk_animals4">
+													<p><span class="fa fa-github-alt"></span>&nbsp;&nbsp;Animals
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+											</label>
+											
+										</td>			
+																		
+										<td class="chk_filter_container">
+											<input type='checkbox' value='entertainment' class="chk_filter" id="chk_entertainment4" name="talk-chk[]"/>
+											<label for="chk_entertainment4">
+											<p><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;Entertainment
+												<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+											</p>
+
+										</label>				
+										</td>
+										<td class="chk_filter_container">
+											<input type='checkbox' value='health' class="chk_filter" id="chk_health4"  name="talk-chk[]"/>
+												<label for="chk_health4">
+													<p><span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;Health
+														<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>
+										</td>
+									</tr>
+									<tr>
+										
+										<td class="chk_filter_container">
+												 <input type='checkbox' value='Food' class="chk_filter" id="chk_food4"  name="talk-chk[]"/>
+												 <label for="chk_food4">
+													<p><span class="glyphicon glyphicon-cutlery"></span>&nbsp;&nbsp;Food
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>	
+										</td>
+														<td class="chk_filter_container">
+												<input type='checkbox' value='Technology' class="chk_filter" id="chk_technology5"  name="talk-chk[]"/>
+												<label for="chk_technology5">
+													<p><span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;Technology
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>
+										</td>
+										
+										<td class="chk_filter_container">
+												<input type='checkbox' value='kids' class="chk_filter" id="chk_kids5"  name="talk-chk[]"/>
+												<label for="chk_kids5">
+													<p><span class="glyphicon glyphicon-headphones"></span>&nbsp;&nbsp;Kids
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>	
+										</td>
+
+
+														
+									</tr>
+									<tr>
+										
+										<td class="chk_filter_container">
+												<input type='checkbox' value='shopping' class="chk_filter" id="chk_shopping5"  name="talk-chk[]"/>
+												<label for="chk_shopping5">
+													<p><span class="glyphicon glyphicon-shopping-cart"></span>&nbsp;&nbsp;Shopping
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>	
+										</td>
+										<td class="chk_filter_container">
+												 <input type='checkbox' value='travel' class="chk_filter" id="chk_travel5"  name="talk-chk[]"/>
+												 <label for="chk_travel5">
+													<p><span class="glyphicon glyphicon-picture"></span>&nbsp;&nbsp;Travel
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												 </label>
+										</td>
+										<td class="chk_filter_container">
+												<input type='checkbox' value='Vehicles' class="chk_filter" id="chk_vehicles5" name="talk-chk[]"/>
+												<label for="chk_vehicles5">
+													<p><span class="glyphicon glyphicon-plane"></span>&nbsp;&nbsp;Vehicles
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												</label>	
+										</td>
+										
+									</tr>
+									<tr>
+									<td class="chk_filter_container">
+												<input type='checkbox' value='fashion' class="chk_filter" id="chk_fashion5"  name="talk-chk[]"/>
+												<label for="chk_fashion5">
+													<p><span class="glyphicon glyphicon-gift"></span>&nbsp;&nbsp;Fashion
+														<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+
+													</p>
+												</label>	
+									</td>
+										<td class="chk_filter_container">
+												 <input type='checkbox' value='gadgets' class="chk_filter" id="chk_gadgets5"  name="talk-chk[]"/>
+												 <label for="chk_gadgets5">
+												 <p><span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;Gadgets
+												 <span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+												 </p>
+												 </label>
+										</td>
+										<td class="chk_filter_container">
+												 <input type='checkbox' value='RealEstate' class="chk_filter" id="chk_others5"  name="talk-chk[]"/>
+												 <label for="chk_others5">
+													<p><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;RealEstate
+													<span class="chk-chked glyphicon glyphicon-ok-circle pull-right"></span>
+													</p>
+												 </label>
+										</td>
+										
+									</tr>
+
+								</tbody>
+							</table>		 					 
+						</div>
+						</div>
+					  </div>
+				</div>	
+			</div>
+			</div>
+		{% if request.user.facebook_id != NULL %}	
+			<div class="form-group">
+				<div class="col-md-12">
+				<a class="btn btn-social-icon btn-xs btn-facebook pull-left"><span class="fa fa-facebook"></span></a>
+				<div class="pull-left" ><b>&nbsp;&nbsp;Post on facebook</b>&nbsp;&nbsp;</div>
+				<div class="" ><input id="talk-fb-cb" name="fb-chk" type="checkbox" checked="checked"> </div>							
+				</div>
+			</div>
+		{% endif %}
+	
+			<div class="form-group">
+				<div class="col-xs-12 col-md-12">
+					<button type="submit"  id="add-talk-home" Class="start_talk_submit_form pull-right btn btn-danger" ><b>Add Talk</b></button>             
+					<input type="hidden" name="talk">              
+
+				</div>
+			</div>
+			{% csrf_token %}
+		</form>        
+	</div>
+	
+    
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->

@@ -1,0 +1,233 @@
+{% load calculations %}
+{% load thumbnail %}				
+
+<h5 class="text-center">Friend Request</h5>
+<!--
+<ul class="nav nav-tabs nav-justified ">
+	<li id="friendrq-not-tab-sm"  class="active" >
+		<a href="#friendrequest-not-sm" data-toggle="tab"> 
+			{% if invitations.count > 0 %}
+				<span class="badge">
+					{{ invitations.count }}
+				</span>
+			{% endif %}
+		</a>
+	</li>
+
+	<li id="wishes-not-tab-sm" data-count='{{ rewish_notify_obj.count }}'>
+		<a href="#wishes-not-sm"  data-toggle="tab">Wishes 
+			{% if rewish_notify_obj.count > 0 %}
+				<span class="badge">
+					{{ rewish_notify_obj.count }}
+				</span>
+			{% endif %}
+		</a>
+		<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+	</li>
+	<li id="talks-not-tab-sm" data-count='{{ talk_notify_obj.count }}' >
+		<a href="#talks-not-sm" data-toggle="tab">Talks 
+			{% if talk_notify_obj.count > 0 %}
+				<span class="badge">
+					{{ talk_notify_obj.count }}
+				</span>
+			{% endif %}
+		</a>
+		<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+	</li>	
+	<li id="">
+		<a href="#friendship-not-sm" data-toggle="tab">Friendship </a>
+	</li>
+</ul>
+	-->
+
+<div class=" tab-content col-xs-12 ">
+	<br>
+	<div class="tab-pane fade in active" id="friendrequest-not-sm">
+		{% load i18n %}				
+		<ul class="not-area-sm" id="">
+			{% if invitations.count = 0 %}
+			<p class="text-center">No friend requests</p>
+			{% endif %}
+			{% for invitation in invitations %}				
+				<li class="friend-request">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12 ">
+							<div class="pull-left not-img-container">
+									{% thumbnail invitation.from_user.user_info.avatar "70x70" crop="center" as im %}
+										<img class="media-object" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+									{% endthumbnail %}
+							</div>
+							<a href="{% url 'profile_detail' username=invitation.from_user.username %}">			
+								{{ invitation.from_user.get_full_name }}
+							</a>sent you a friend request.
+							<small class="text-muted">{{ invitation.sent | feed_time }}</small>
+							<br>
+							<br>
+						<div class="col-md-12 col-sm-12 col-xs-12 ">	
+							<button data-accepturl="{% url 'friends_show_invitation' invitation.pk %}accept" class="accept-frnd-rqst btn btn-xs btn-success">Accept</button>
+							<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>	
+							&nbsp;
+							<button data-declineurl="{% url 'friends_show_invitation' invitation.pk %}decline" class="decline-frnd-rqst btn btn-xs btn-danger">Decline</button>
+							<input type="hidden" id="star-csrf" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+						</div>
+	
+						</div>
+					</div>	
+				</li>				
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="tab-pane fade" id="wishes-not-sm">
+		<ul class="list-group">
+			<li>
+				<a id="clear-wish-not-sm" class="text-muted ">&nbsp;&nbsp;Mark all as read</a>
+			</li>
+		</ul>
+		<ul  id=""  class="not-area-sm list-group">
+
+			{% if rewish_notify_obj.count = 0 %}
+				<p class="text-center">No notifications for wishes</p>
+			{% endif %}
+
+			{% for rewish_notify in rewish_notify_obj %}							
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12 ">
+							<div class="pull-left not-img-container">
+								{% thumbnail rewish_notify.user.avatar "120x120" crop="center" as im %}
+									<img class="" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+								{% endthumbnail %}
+							</div>
+							<a href="/{{ activity.user.user_id.get_full_name }}">{{ rewish_notify.user.user_id.get_full_name }}</a>
+							rewished " {{ rewish_notify.wish.wish_text }} "
+							<p class="pull-right item-date-time">{{ rewish_notify.added | feed_time }}</p>
+						</div>
+					</div>	
+				</li>				
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="tab-pane fade" id="talks-not-sm">
+		<ul class="list-group ">
+			<li>
+				<a id="clear-talk-not-sm" class="text-muted ">&nbsp;&nbsp;Clear all notifications</a>
+			</li>
+		</ul>
+		<ul class="list-group not-area-sm">
+			{% if talk_count_obj.count = 0 %}
+				<p class="text-center">No notifications for talks</p>
+			{% endif %}
+			{% for talk_notify in talk_notify_obj %}
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12 ">
+							{{ talk_notify.notify_count }} new coments on talk {{ talk_notify.talk.title }}
+							<p class="pull-right item-date-time">{{ talk_notify.added | feed_time }}</p>
+						</div>
+					</div>	
+				</li>								
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="tab-pane fade" id="friendship-not-sm">
+		<ul class="list-group not-area-sm">
+			{% if accepted_obj.count = 0 %}
+				<p class="text-center">No new friendship</p>
+			{% endif %}
+
+			{% for accepted in accepted_obj %}								
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12 ">
+							<div class="pull-left not-img-container">
+									{% thumbnail accepted.to_user.user_info.avatar "70x70" crop="center" as im %}
+										<img class="media-object" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+									{% endthumbnail %}
+							</div>
+							<a href="">{{ accepted.to_user.get_full_name }}</a> is now friends with you.
+							<p class="pull-right item-date-time">{{ accepted.added | feed_time }}</p>
+						</div>
+					</div>	
+				</li>				
+			{% endfor %} 
+		</ul>
+	</div>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12 text-center" id="not-sm-footer"><a  href="{% url 'notifications' %}">see all</a></div>
+
+<script>	
+	$('#clear-wish-not-sm').on('click',function() { // catch the form's submit event
+    var coin = $('#wishes-not-tab-sm').find('input[name|="csrfmiddlewaretoken"]').val();
+	var count = $('#wishes-not-tab-sm').data('count');
+	if(count > 0 )
+		{
+			$.ajax({
+			type: 'POST',          
+			data:{'wishes':'','csrfmiddlewaretoken':coin},
+			success: function(data){     
+			$('#wishes-not-tab-sm').html('<a href="#wishes-not-sm"  data-toggle="tab">Wishes </a>');
+			}         
+			});
+		}
+	});	
+</script>
+<script>	
+	$('#clear-talk-not-sm').on('click',function() { // catch the form's submit event
+    var coin = $('#talks-not-tab-sm').find('input[name|="csrfmiddlewaretoken"]').val();
+	var count = $('#talks-not-tab-sm').data('count');
+	if(count > 0 )
+		{
+			$.ajax({
+			type: 'POST',          
+			data:{'talks':'','csrfmiddlewaretoken':coin},
+			success: function(data){     
+			$('#talks-not-tab-sm').html('<a href="#talks-not-sm" data-toggle="tab">Talks </a>');
+			}         
+			});
+		}
+	});	
+</script>
+
+<script>
+$( document ).ready(function() {
+var talkcount = $('.title').data('talkcount');
+});
+</script>
+<script>
+$('.accept-frnd-rqst').on('click',function() { 
+	var newurl = $(this).data('accepturl');
+    var coin = $(this).parent().find('input[name|="csrfmiddlewaretoken"]').val();
+
+			$.ajax({
+			type: 'POST',
+			url: ''+newurl+'/' ,
+			data:{'csrfmiddlewaretoken':coin},        
+			context:this,  
+			success: function(data){     
+			$(this).closest('.friend-request').remove();	
+			$('#friendrq-not-tab-sm').html('<a href="#friendrequest-not-sm" data-toggle="tab">Requests</a>');
+
+				}         
+			});
+						
+});
+</script>
+<script>
+$('.decline-frnd-rqst').on('click',function() { 
+	var newurl = $(this).data('declineurl');
+    var coin = $(this).parent().find('input[name|="csrfmiddlewaretoken"]').val();
+
+			$.ajax({
+			type: 'POST',
+			url: ''+newurl+'/' ,
+			data:{'csrfmiddlewaretoken':coin},          
+			context:this,  
+			success: function(data){     
+			$(this).closest('.friend-request').remove();	
+			$('#friendrq-not-tab-sm').html('<a href="#friendrequest-not-sm" data-toggle="tab">Requests</a>');
+				}         
+			});
+						
+});
+</script>

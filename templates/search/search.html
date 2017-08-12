@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<br><br><div class="hidden-sm hidden-xs"><br><br><br></div>
+
+<div class="feed">
+
+	<div class="panel panel-default static">	
+		<div class="panel-heading">Showing {{ results.count }} results</div>
+		<div class="panel-body">
+			{% if request.GET.q %}<div class="margin-5 btn btn-default btn-sm" >Query : <a href="">{{ request.GET.q }}</a></div>{% endif %}
+			{% if request.GET.location %}<div class="margin-5 btn btn-default btn-sm">Location : <span class="danger-color">{{ request.GET.location }}</span></div>{% endif %}
+			{% if request.GET.cat %}<div class="margin-5 btn btn-default btn-sm">Category : <span class="danger-color">{{ request.GET.cat }}</span></div>{% endif %}
+			{% if request.GET.sub_cat %}<div class="margin-5 btn btn-default btn-sm">Sub-Category : <span class="danger-color">{{ request.GET.sub_cat }}</span></div>{% endif %}
+			{% if request.GET.min_price %}<div class="margin-5 btn btn-default btn-sm">Min Price : <span class="danger-color">{{ request.GET.min_price }}</span></div>{% endif %}
+			{% if request.GET.max_price %}<div class="margin-5 btn btn-default btn-sm">Max Price : <span class="danger-color">{{ request.GET.max_price }}</span></div>{% endif %}
+		</div>
+	</div>
+
+<div class="search_feed">
+{% include 'search/search_feed.html' %}
+</div>
+
+<div class="overlay-back2"></div>
+</div>
+
+
+{% block js %}
+{{ block.super }}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+	<script>
+	 $.endlessPaginate({
+		paginateOnScroll: true,
+		paginateOnScrollMargin: 100,
+	});
+    </script>
+ 
+<script>
+function hideDiv(){
+    if ($(window).width() < 992) {
+	$(".search-filters-main").hide();
+    }else{
+	$(".search-filters-main").show();
+    }
+}
+//run on document load and on window resize
+$(document).ready(function () {
+    //on load
+    hideDiv();
+    //on resize
+});
+</script>
+
+{% endblock %}
+
+{% endblock %}

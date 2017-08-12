@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load calculations %}
+{% load thumbnail %}
+{% load widget_tweaks %}
+{% block content %}
+<br><br><br>
+<div class="feed">
+
+{% if not feed_obj %}
+
+<div class="empty-feed">
+	<hr class="embosed">
+	<h1 class="text-center ">Empty Feed !</h1>	
+	<p class="lead text-center ">
+		<i>Nothing exists except atoms and empty space; everything else is opinion.</i>
+		<p class="text-center text-muted"> — Democritus </p>
+	</p>
+	<br>
+	<p class="lead text-center">
+		<button type="button" class="btn btn-danger btn-lg" id="wish-modal-call"><b>Add free post</b></button>
+	</p>
+</div>
+{% else %}
+	<div class="static item wish" >
+				<div class="text-center">
+					<button  data-placement="bottom" title="Add post to Buy, Sell and Rent" type="button" id="wish-modal-call" class="tooltip-marker btn btn-danger btn-block"><span class="fa fa-plus"></span>&nbsp;&nbsp;<b>Add a Free Advertisement</b></button>
+				</div>
+	</div>
+
+{% endif %}
+
+<div class="feed_page">
+{% include 'feed.html' %}
+</div>
+	
+<div id="msg-modal" class="modal fade" >
+	{% include 'new_message.html' %}
+</div><!-- /.modal -->
+
+<!--
+<div id="talk-modal" class="modal fade">
+{% include 'add_talk.html' %}
+</div><!-- /.modal -->
+
+
+{% if not user.user_info.location %}
+    <div id="location-modal" class="location modal fade" data-location="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Help us find products near you</h4>
+                </div>
+
+				<form class="form-horizontal" role="form" enctype="multipart/form-data" method="post">
+				{% csrf_token %}
+                <div class="modal-body">
+                    <p>Please select your nearest city. This will be usefull to get relavent posts on home page.</p>
+                    <input type="text" class="location form-control"  placeholder="Nearest city">
+                    <input type="hidden" class="location-id form-control" name="location">
+
+                    <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Remind Later</button>
+                    <button type="submit" class="btn btn-danger">Save changes</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="overlay-back2"></div>
+<div class="Closewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Wish Closed Successfully </div></div>
+<div class="rewish-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Rewished Successfully </div></div>
+<div class="rating-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Rating done Successfully </div></div>
+<div class="share-alert"> <div class="alert alert-success"><div class="glyphicon glyphicon-ok-sign"></div> &nbsp;&nbsp;Billboard Shared Successfully </div></div>
+</div>
+
+
+{% block js %}
+{{ block.super }}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+<script>$('.activity_page').endlessPaginate();</script>    
+<script>		
+$('.feed_page').endlessPaginate({
+	paginateOnScroll: true,
+	paginateOnScrollMargin: 100,
+});
+</script>
+
+{% include 'common_js.html' %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+
+<script>
+$("#wish-modal-call").click(function(){
+$('#wish-modal').modal();
+});
+</script>
+
+<script>
+$('#location-modal').modal();
+</script>
+
+<script>
+$("#talk-modal-call").click(function(){
+$('#talk-modal').modal();
+});
+</script>	
+
+<script>
+$(".btn-filter3").on('click',function(){
+$(".filter3").slideToggle();
+});
+</script>
+
+<script>
+$('.tooltip-marker').tooltip();
+</script>
+
+<script>
+$( "input.location" ).autocomplete({
+	source: "{% url 'autocomplete_city' %}",
+	minLength: 2,
+	
+	  select: function(event, ui) {
+        event.preventDefault();
+        $(".location").val(ui.item.city);
+		$(".location-id").val(ui.item.id);
+
+    },
+    focus: function(event, ui) {
+        event.preventDefault();
+        $(".location").val(ui.item.city);
+		$(".location-id").val(ui.item.id);
+    }	
+});
+</script>
+
+
+{% endblock %}
+{% endblock %}

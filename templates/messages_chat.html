@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load calculations %}
+
+{% load thumbnail %}
+{% block head %}
+<style>
+li.list-group-item.active{
+	background-color:#E35E0E!important;
+	border-color:#E35E0E!important;
+	color:#FFF;
+	}
+</style>
+{% endblock %}
+
+{% block content%}
+<br><br>
+<br><br>
+
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+
+	{% if form.errors %}
+		<p style="color: red;">Please correct the error{{ form.errors|pluralize }} below.</p>
+	{% endif %}
+
+	<div class="new-message-singleuser">
+	<li class="list-group-item  active">
+		<h4 class="list-group-item-heading ">
+			<a class="btn btn-danger btn-sm pull-right" href='/messages/'>Back</a>		
+		<b ><i class="fa fa-comments fa-fw"></i>&nbsp;&nbsp;Chat with {{ user_message.get_full_name }}</b>
+		</h4>
+	</li>
+
+	<div class="all-message-chat">
+	<div class="col-xs-12">
+	<ul class="media-list">
+		{% include 'chat.html' %}			
+	</ul></div></div>
+	
+		<form action="" class="form-inline new-message-form" method="">      
+		<div class="col-xs-12">
+		<div class="input-group">
+			<input type="text" name="text" class="form-control" placeholder="Type message" required>
+			<input type="hidden" name="send_msg"  />
+			{% csrf_token %}
+		<div class="input-group-btn">
+		  <button type="submit" class="send-msg btn btn-danger">Send Message</button>
+		</div>
+		</div>
+		</div>
+		</form>
+
+	</div>
+	</div>
+
+{% block js %}
+
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.9.1.js"></script>
+	<script src="{{ STATIC_URL }}js/endless-pagination.js"></script>
+	<script>$('.all-message-chat').endlessPaginate();</script>
+
+<script>
+$(".new-message-form").submit(function(event){
+	event.preventDefault();
+	var $form=$(this);
+	var data= $form.serialize();
+		$.ajax({
+				 type:"POST",
+				 url:"/messages/" + "{{ user_message.username }}",
+				 data: data,
+				 success: function(data){
+				$(".message-threads" ).last().append(data);
+				$(".all-message-chat").animate({ scrollTop: 99999 }, "fast");																			 
+				$(".new-message-form")[0].reset();
+				},
+				error:function(){
+				alert("failure");
+				$('.all-message-chat').html('There is error while submit');
+				}
+			  });
+		return false; //<---- move it here			
+	});
+</script>
+
+<script>
+$('.message-threads').hover(
+	function(){$(this).find('.delete-icon').show();},
+	function(){$(this).find('.delete-icon').hide();}
+);
+</script>
+<script>
+		$(".all-message-chat").animate({ scrollTop: 99999999 }, "fast");
+</script>
+{% endblock %}
+{% endblock %}
+

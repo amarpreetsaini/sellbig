@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block content%}
+<div class="feed col-md-10 col-md-offset-1 col-sm-12 col-xs-12 panel panel-default">
+
+<h4>Contact List</h4>
+
+
+		{% for biz_users in biz_user_obj %}
+		<div class="contactslist">
+			{% thumbnail biz_users.user.avatar "120x120" crop="center" as im %}
+			<a href="/{{ biz_users.user.user_id.username }}"><img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+			{% endthumbnail %}	
+			<!--	<p><a href="/{{ friend.user_id.username }}">{{ friend.user_id.username }}</a></p>-->
+
+			<p class="text-center"><a href="/{{ biz_users.user.user_id.username }}">{{ biz_users.user.user_id.get_full_name}}</a></p>			
+
+		</div>		
+		{% endfor %}
+</div>
+{% endblock %}
